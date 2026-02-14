@@ -7,6 +7,10 @@
     <title>Operator-OS // Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=JetBrains+Mono:wght@300;500&display=swap" rel="stylesheet">
+    <script>
+        // Shim process.env for browser environments to prevent crashes
+        window.process = window.process || { env: { API_KEY: '' } };
+    </script>
     <style>
         body {
             margin: 0;
@@ -103,5 +107,6 @@
 <body>
     <div id="root"></div>
     <div class="scanlines"></div>
+    <script type="module" src="index.tsx"></script>
 </body>
 </html>
