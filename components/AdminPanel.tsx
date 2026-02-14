@@ -124,6 +124,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
     setProjects(prev => [...prev, { 
       id: newId, 
       title: 'NEW_PROJECT', 
+      subtitle: 'SUBTITLE // TAGS',
       category: 'UNSET', 
       description: '', 
       technologies: ['React'], 
@@ -196,6 +197,14 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                       <input type="text" value={p.title} onChange={(e) => updateProject(p.id, 'title', e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-2 text-xs text-amber-200 font-hud focus:border-amber-500 outline-none uppercase" />
                     </div>
                     <div>
+                      <label className="text-[9px] text-amber-700 uppercase block mb-1 font-hud tracking-widest">Subtitle // Tech Summary</label>
+                      <input type="text" value={p.subtitle || ''} onChange={(e) => updateProject(p.id, 'subtitle', e.target.value)} placeholder="e.g. REACT // TAILWIND // NODE" className="w-full bg-black/60 border border-amber-900/50 p-2 text-[10px] text-amber-500 font-hud outline-none uppercase tracking-widest" />
+                    </div>
+                    <div>
+                      <label className="text-[9px] text-amber-700 uppercase block mb-1 font-hud tracking-widest">Image_Resource_URL</label>
+                      <input type="text" value={p.imageUrl || ''} onChange={(e) => updateProject(p.id, 'imageUrl', e.target.value)} placeholder="https://unsplash.com/..." className="w-full bg-black/60 border border-amber-900/50 p-2 text-[10px] text-amber-600 font-mono outline-none" />
+                    </div>
+                    <div>
                       <label className="text-[9px] text-amber-700 uppercase block mb-1 font-hud tracking-widest">Manifest_Description</label>
                       <textarea value={p.description} onChange={(e) => updateProject(p.id, 'description', e.target.value)} className="w-full h-24 bg-black/60 border border-amber-900/50 p-2 text-xs text-cyan-100 font-mono focus:border-amber-500 outline-none resize-none" />
                     </div>
@@ -203,7 +212,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                   <div className="space-y-6">
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="text-[9px] text-amber-700 uppercase block mb-1 font-hud tracking-widest">Live_Uplink</label>
+                        <label className="text-[9px] text-amber-700 uppercase block mb-1 font-hud tracking-widest">Live_Uplink (Iframe Target)</label>
                         <input type="text" placeholder="https://..." value={p.links?.live || ''} onChange={(e) => updateProjectLinks(p.id, 'live', e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-2 text-[10px] text-amber-500 font-mono outline-none" />
                       </div>
                       <div>

@@ -11,6 +11,7 @@ const ProjectPanel: React.FC<ProjectPanelProps> = ({ projects }) => {
   const [isScanning, setIsScanning] = useState(false);
   const [scanProgress, setScanProgress] = useState(0);
   const [scanStatus, setScanStatus] = useState<'IDLE' | 'SUCCESS'>('IDLE');
+  const [showLiveView, setShowLiveView] = useState(false);
 
   useEffect(() => {
     if (!projects.find(p => p.id === selectedId) && projects.length > 0) {
@@ -40,6 +41,10 @@ const ProjectPanel: React.FC<ProjectPanelProps> = ({ projects }) => {
       if (currentStep >= steps) {
         clearInterval(interval);
         setScanStatus('SUCCESS');
+        // Automatically open live view if a link exists
+        if (selected.links?.live) {
+          setTimeout(() => setShowLiveView(true), 500);
+        }
         setTimeout(() => {
           setIsScanning(false);
           setScanStatus('IDLE');
@@ -51,7 +56,39 @@ const ProjectPanel: React.FC<ProjectPanelProps> = ({ projects }) => {
   if (!selected) return <div className="text-cyan-900 font-hud">NO_PROJECT_DATA_AVAILABLE</div>;
 
   return (
-    <div className="flex flex-col md:flex-row gap-4 h-full">
+    <div className="flex flex-col md:flex-row gap-4 h-full relative">
+      {/* Live Preview Modal */}
+      {showLiveView && selected.links?.live && (
+        <div className="fixed inset-0 z-[100] bg-slate-950/95 flex flex-col p-4 md:p-10 animate-in fade-in zoom-in duration-300">
+          <div className="hud-border hud-border-tl hud-border-tr hud-border-bl hud-border-br flex-1 flex flex-col overflow-hidden relative">
+            <div className="h-10 border-b border-cyan-500/30 flex items-center justify-between px-4 bg-cyan-950/20">
+              <div className="flex items-center gap-3">
+                <div className="w-2 h-2 bg-emerald-500 animate-pulse rounded-full" />
+                <span className="text-[10px] font-hud text-cyan-400 uppercase tracking-widest">LIVE_UPLINK_ESTABLISHED: {selected.title}</span>
+              </div>
+              <button 
+                onClick={() => setShowLiveView(false)}
+                className="text-cyan-500 hover:text-rose-500 font-hud text-xs tracking-widest transition-colors uppercase"
+              >
+                [ TERMINATE_SESSION ]
+              </button>
+            </div>
+            <div className="flex-1 bg-black relative">
+               <div className="absolute inset-0 pointer-events-none border-4 border-cyan-500/10 z-10" />
+               <iframe 
+                src={selected.links.live} 
+                className="w-full h-full border-none grayscale-[0.2] hover:grayscale-0 transition-all"
+                title={`Live Preview: ${selected.title}`}
+               />
+            </div>
+            <div className="h-8 border-t border-cyan-500/30 bg-cyan-950/40 flex items-center px-4 justify-between">
+                <div className="text-[8px] text-cyan-700 font-hud">ENCRYPTION: AES_256 // TUNNEL: SECURE</div>
+                <div className="text-[8px] text-cyan-700 font-hud">REMOTE_HOST: {new URL(selected.links.live).hostname}</div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="w-full md:w-1/3 flex flex-col gap-2">
         <div className="text-[10px] text-cyan-600 mb-1 uppercase px-1 font-hud">Active_Tasks</div>
         <div className="flex flex-col gap-2 max-h-[600px] overflow-y-auto pr-2 custom-scroll">
@@ -85,19 +122,39 @@ const ProjectPanel: React.FC<ProjectPanelProps> = ({ projects }) => {
       <div className="flex-1 hud-border hud-border-tr p-6 relative overflow-hidden flex flex-col min-h-[500px]">
         <div className="absolute top-0 right-0 w-24 h-24 border-t border-r border-cyan-500/10 pointer-events-none" />
         
-        <div className="mb-6">
-          <div className="text-[10px] text-cyan-500/50 font-hud mb-1 tracking-widest uppercase">NAME_STR: {selected.title}</div>
-          <h2 className="text-3xl font-hud text-cyan-400 mb-2 uppercase tracking-wider">{selected.title}</h2>
-          <div className="flex flex-wrap gap-2 mb-6">
-            {selected.technologies.map(tech => (
-              <span key={tech} className="text-[10px] bg-cyan-500/10 text-cyan-400 px-2 py-0.5 border border-cyan-500/30 font-hud uppercase">
-                {tech}
-              </span>
-            ))}
+        {/* Project Visuals */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
+          <div className="space-y-4">
+            <div>
+              <div className="text-[10px] text-cyan-500/50 font-hud mb-1 tracking-widest uppercase">NAME_STR: {selected.title}</div>
+              <h2 className="text-3xl font-hud text-cyan-400 mb-0 uppercase tracking-wider">{selected.title}</h2>
+              {selected.subtitle && (
+                <div className="text-[10px] text-amber-500 font-hud uppercase tracking-[0.3em] mb-4 mt-1">
+                  {selected.subtitle}
+                </div>
+              )}
+              <div className="flex flex-wrap gap-2 mb-6">
+                {selected.technologies.map(tech => (
+                  <span key={tech} className="text-[10px] bg-cyan-500/10 text-cyan-400 px-2 py-0.5 border border-cyan-500/30 font-hud uppercase">
+                    {tech}
+                  </span>
+                ))}
+              </div>
+              <p className="text-sm text-cyan-300/80 leading-relaxed font-light">
+                {selected.description}
+              </p>
+            </div>
           </div>
-          <p className="text-sm text-cyan-300/80 leading-relaxed max-w-xl font-light">
-            {selected.description}
-          </p>
+          
+          <div className="relative group overflow-hidden border border-cyan-500/20 bg-black/40 h-48 xl:h-auto">
+             {selected.imageUrl ? (
+               <img src={selected.imageUrl} alt={selected.title} className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-700 grayscale group-hover:grayscale-0" />
+             ) : (
+               <div className="w-full h-full flex items-center justify-center text-cyan-900 font-hud text-[10px]">NO_VISUAL_AVAILABLE</div>
+             )}
+             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
+             <div className="absolute bottom-2 left-2 text-[8px] text-cyan-500/50 font-hud uppercase">Visual_Reference_ID: {selected.id}</div>
+          </div>
         </div>
 
         {selected.links && (Object.values(selected.links).some(Boolean)) && (
@@ -163,9 +220,18 @@ const ProjectPanel: React.FC<ProjectPanelProps> = ({ projects }) => {
             )}
             <span className="relative z-10 flex items-center justify-center gap-2">
               {isScanning && <span className="w-2 h-2 bg-cyan-400 animate-ping rounded-full" />}
-              {scanStatus === 'SUCCESS' ? 'SCAN_SUCCESS' : isScanning ? `SCANNING_${scanProgress}%` : 'EXECUTE_INTERFACE'}
+              {scanStatus === 'SUCCESS' ? 'UPLINK_ENGAGED' : isScanning ? `INITIALIZING_${scanProgress}%` : 'EXECUTE_INTERFACE'}
             </span>
           </button>
+          
+          {selected.links?.live && !isScanning && scanStatus !== 'SUCCESS' && (
+             <button 
+              onClick={() => setShowLiveView(true)}
+              className="px-6 py-3 border border-amber-500/30 text-amber-500 font-hud text-[10px] hover:bg-amber-500/10 transition-all tracking-widest uppercase"
+             >
+               DIRECT_UPLINK
+             </button>
+          )}
         </div>
       </div>
     </div>

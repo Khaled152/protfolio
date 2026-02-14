@@ -18,6 +18,8 @@ export interface Skill {
 export interface Project {
   id: string;
   title: string;
+  subtitle?: string;
+  imageUrl?: string;
   category: string;
   description: string;
   technologies: string[];

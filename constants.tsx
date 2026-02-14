@@ -17,6 +17,8 @@ export const PROJECTS: Project[] = [
   {
     id: 'P-01',
     title: 'AETHER-DASH',
+    subtitle: 'NEXT.JS // TAILWIND // K8S',
+    imageUrl: 'https://images.unsplash.com/photo-1551288049-bbda38a594a0?auto=format&fit=crop&q=80&w=800',
     category: 'SaaS',
     description: 'Enterprise-grade monitoring dashboard for cloud infrastructure, reducing incident response time by 40%.',
     technologies: ['React', 'Node.js', 'Kubernetes'],
@@ -26,6 +28,8 @@ export const PROJECTS: Project[] = [
   {
     id: 'P-02',
     title: 'CRYPTO-VAULT',
+    subtitle: 'TYPESCRIPT // SOLIDITY // WEB3',
+    imageUrl: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&q=80&w=800',
     category: 'FINTECH',
     description: 'Highly secure digital asset management platform with multi-signature authorization protocols.',
     technologies: ['TypeScript', 'Solidity', 'Next.js'],
@@ -35,6 +39,8 @@ export const PROJECTS: Project[] = [
   {
     id: 'P-03',
     title: 'NEXUS-UI',
+    subtitle: 'FRAMER // RADIX // HUD-DESIGN',
+    imageUrl: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800',
     category: 'OPEN_SOURCE',
     description: 'A component library designed for low-latency financial terminals and military-grade HUD interfaces.',
     technologies: ['Tailwind', 'Storybook', 'Framer'],
