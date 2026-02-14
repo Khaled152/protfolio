@@ -36,7 +36,7 @@ const ExperiencePanel: React.FC<ExperiencePanelProps> = ({ experience }) => {
               <div className="space-y-2">
                 {exp.achievements.map((ach, j) => (
                   <div key={j} className="flex gap-3 text-xs text-cyan-300/80">
-                    <span className="text-cyan-500 font-hud shrink-0">>></span>
+                    <span className="text-cyan-500 font-hud shrink-0">&gt;&gt;</span>
                     <span>{ach}</span>
                   </div>
                 ))}

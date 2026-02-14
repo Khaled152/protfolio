@@ -1,15 +1,15 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { NavSection, Project, Experience, Skill } from './types.ts';
-import { PROJECTS as INITIAL_PROJECTS, EXPERIENCE as INITIAL_EXPERIENCE, SKILLS as INITIAL_SKILLS } from './constants.tsx';
-import Sidebar from './components/Sidebar.tsx';
-import Header from './components/Header.tsx';
-import StatusPanel from './components/StatusPanel.tsx';
-import SkillsPanel from './components/SkillsPanel.tsx';
-import ProjectPanel from './components/ProjectPanel.tsx';
-import ExperiencePanel from './components/ExperiencePanel.tsx';
-import ContactPanel from './components/ContactPanel.tsx';
-import AdminPanel from './components/AdminPanel.tsx';
+import { NavSection, Project, Experience, Skill } from './types';
+import { PROJECTS as INITIAL_PROJECTS, EXPERIENCE as INITIAL_EXPERIENCE, SKILLS as INITIAL_SKILLS } from './constants';
+import Sidebar from './components/Sidebar';
+import Header from './components/Header';
+import StatusPanel from './components/StatusPanel';
+import SkillsPanel from './components/SkillsPanel';
+import ProjectPanel from './components/ProjectPanel';
+import ExperiencePanel from './components/ExperiencePanel';
+import ContactPanel from './components/ContactPanel';
+import AdminPanel from './components/AdminPanel';
 
 const App: React.FC = () => {
   const [activeSection, setActiveSection] = useState<NavSection>(NavSection.STATUS);
