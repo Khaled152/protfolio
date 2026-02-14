@@ -13,6 +13,8 @@ interface AdminPanelProps {
   setOperatorName: (name: string) => void;
   operatorBio: string;
   setOperatorBio: (bio: string) => void;
+  appTitle: string;
+  setAppTitle: (title: string) => void;
   contactData: {
     email: string;
     phone: string;
@@ -33,6 +35,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
   experience, setExperience,
   operatorName, setOperatorName,
   operatorBio, setOperatorBio,
+  appTitle, setAppTitle,
   contactData, setContactData
 }) => {
   const [activeTab, setActiveTab] = useState<'IDENTITY' | 'PROJECTS' | 'SKILLS' | 'EXPERIENCE' | 'CONTACT'>('IDENTITY');
@@ -164,6 +167,11 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
         
         {activeTab === 'IDENTITY' && (
           <div className="space-y-8 max-w-2xl">
+            <div>
+              <label className="text-[10px] text-amber-700 uppercase font-hud block mb-2 tracking-widest">Application_Title_Protocol</label>
+              <input type="text" value={appTitle} onChange={e => setAppTitle(e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-4 text-amber-200 font-mono text-sm focus:border-amber-500 outline-none uppercase tracking-widest" />
+              <div className="text-[8px] text-amber-900 mt-1 uppercase italic font-hud tracking-widest">Sets the text displayed in the browser tab</div>
+            </div>
             <div>
               <label className="text-[10px] text-amber-700 uppercase font-hud block mb-2 tracking-widest">Operator_Codename</label>
               <input type="text" value={operatorName} onChange={e => setOperatorName(e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-4 text-amber-200 font-hud focus:border-amber-500 outline-none uppercase tracking-widest" />

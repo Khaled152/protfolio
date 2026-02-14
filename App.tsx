@@ -25,6 +25,7 @@ const App: React.FC = () => {
   const [showOverrideNotice, setShowOverrideNotice] = useState(false);
   
   // Dynamic Portfolio State
+  const [appTitle, setAppTitle] = useState('Operator-OS // Portfolio');
   const [operatorName, setOperatorName] = useState(INITIAL_NAME);
   const [operatorBio, setOperatorBio] = useState(INITIAL_BIO);
   const [projects, setProjects] = useState<Project[]>(INITIAL_PROJECTS);
@@ -40,6 +41,11 @@ const App: React.FC = () => {
       { label: 'X-TWITTER', url: 'https://x.com' }
     ]
   });
+
+  // Sync document title
+  useEffect(() => {
+    document.title = appTitle;
+  }, [appTitle]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -117,6 +123,7 @@ const App: React.FC = () => {
                 operatorName={operatorName} setOperatorName={setOperatorName}
                 operatorBio={operatorBio} setOperatorBio={setOperatorBio}
                 contactData={contactData} setContactData={setContactData}
+                appTitle={appTitle} setAppTitle={setAppTitle}
               />
             )}
           </div>
