@@ -12,6 +12,7 @@ const ProjectPanel: React.FC<ProjectPanelProps> = ({ projects }) => {
   const [scanProgress, setScanProgress] = useState(0);
   const [scanStatus, setScanStatus] = useState<'IDLE' | 'SUCCESS'>('IDLE');
   const [showLiveView, setShowLiveView] = useState(false);
+  const [isMaximized, setIsMaximized] = useState(false);
 
   useEffect(() => {
     if (!projects.find(p => p.id === selectedId) && projects.length > 0) {
@@ -43,7 +44,10 @@ const ProjectPanel: React.FC<ProjectPanelProps> = ({ projects }) => {
         setScanStatus('SUCCESS');
         // Automatically open live view if a link exists
         if (selected.links?.live) {
-          setTimeout(() => setShowLiveView(true), 500);
+          setTimeout(() => {
+            setShowLiveView(true);
+            setIsMaximized(false); // Reset to floating by default
+          }, 500);
         }
         setTimeout(() => {
           setIsScanning(false);
@@ -57,33 +61,51 @@ const ProjectPanel: React.FC<ProjectPanelProps> = ({ projects }) => {
 
   return (
     <div className="flex flex-col md:flex-row gap-4 h-full relative">
-      {/* Live Preview Modal */}
+      {/* Floating/Maximized Live Preview Modal */}
       {showLiveView && selected.links?.live && (
-        <div className="fixed inset-0 z-[100] bg-slate-950/95 flex flex-col p-4 md:p-10 animate-in fade-in zoom-in duration-300">
-          <div className="hud-border hud-border-tl hud-border-tr hud-border-bl hud-border-br flex-1 flex flex-col overflow-hidden relative">
-            <div className="h-10 border-b border-cyan-500/30 flex items-center justify-between px-4 bg-cyan-950/20">
+        <div className={`fixed inset-0 z-[100] flex items-center justify-center pointer-events-none transition-all duration-300 ${isMaximized ? 'p-0' : 'p-4 md:p-12'}`}>
+          <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm pointer-events-auto" onClick={() => setShowLiveView(false)} />
+          
+          <div className={`hud-border hud-border-tl hud-border-tr hud-border-bl hud-border-br bg-slate-900 flex flex-col overflow-hidden relative shadow-[0_0_50px_rgba(0,0,0,0.8)] pointer-events-auto transition-all duration-500 ease-out ${
+            isMaximized ? 'w-full h-full' : 'w-full md:w-[85%] h-[85%] border-cyan-500/50'
+          }`}>
+            <div className="h-10 border-b border-cyan-500/30 flex items-center justify-between px-4 bg-cyan-950/40 select-none">
               <div className="flex items-center gap-3">
                 <div className="w-2 h-2 bg-emerald-500 animate-pulse rounded-full" />
-                <span className="text-[10px] font-hud text-cyan-400 uppercase tracking-widest">LIVE_UPLINK_ESTABLISHED: {selected.title}</span>
+                <span className="text-[10px] font-hud text-cyan-400 uppercase tracking-widest flex items-center gap-2">
+                  UPLINK_STATUS: ENGAGED // {selected.title}
+                </span>
               </div>
-              <button 
-                onClick={() => setShowLiveView(false)}
-                className="text-cyan-500 hover:text-rose-500 font-hud text-xs tracking-widest transition-colors uppercase"
-              >
-                [ TERMINATE_SESSION ]
-              </button>
+              <div className="flex items-center gap-4">
+                <button 
+                  onClick={() => setIsMaximized(!isMaximized)}
+                  className="text-cyan-500 hover:text-cyan-300 font-hud text-[10px] tracking-widest transition-colors uppercase flex items-center gap-1"
+                >
+                  {isMaximized ? '[ RESTORE ]' : '[ MAXIMIZE ]'}
+                </button>
+                <button 
+                  onClick={() => setShowLiveView(false)}
+                  className="text-cyan-500 hover:text-rose-500 font-hud text-[10px] tracking-widest transition-colors uppercase"
+                >
+                  [ X ]
+                </button>
+              </div>
             </div>
+
             <div className="flex-1 bg-black relative">
-               <div className="absolute inset-0 pointer-events-none border-4 border-cyan-500/10 z-10" />
+               <div className="absolute inset-0 pointer-events-none border-4 border-cyan-500/5 z-10" />
                <iframe 
                 src={selected.links.live} 
-                className="w-full h-full border-none grayscale-[0.2] hover:grayscale-0 transition-all"
+                className="w-full h-full border-none grayscale-[0.1] hover:grayscale-0 transition-all bg-slate-900"
                 title={`Live Preview: ${selected.title}`}
                />
+               {/* Scanning overlay on iframe load */}
+               <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-cyan-500/5 to-transparent h-20 animate-[scan_3s_infinite]" />
             </div>
+
             <div className="h-8 border-t border-cyan-500/30 bg-cyan-950/40 flex items-center px-4 justify-between">
-                <div className="text-[8px] text-cyan-700 font-hud">ENCRYPTION: AES_256 // TUNNEL: SECURE</div>
-                <div className="text-[8px] text-cyan-700 font-hud">REMOTE_HOST: {new URL(selected.links.live).hostname}</div>
+                <div className="text-[8px] text-cyan-700 font-hud uppercase">Signal_Lock: Stable // AES_256</div>
+                <div className="text-[8px] text-cyan-700 font-hud uppercase">{new URL(selected.links.live).hostname}</div>
             </div>
           </div>
         </div>
@@ -226,7 +248,10 @@ const ProjectPanel: React.FC<ProjectPanelProps> = ({ projects }) => {
           
           {selected.links?.live && !isScanning && scanStatus !== 'SUCCESS' && (
              <button 
-              onClick={() => setShowLiveView(true)}
+              onClick={() => {
+                setShowLiveView(true);
+                setIsMaximized(false);
+              }}
               className="px-6 py-3 border border-amber-500/30 text-amber-500 font-hud text-[10px] hover:bg-amber-500/10 transition-all tracking-widest uppercase"
              >
                DIRECT_UPLINK

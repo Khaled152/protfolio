@@ -17,6 +17,8 @@ import ExperiencePanel from './components/ExperiencePanel';
 import ContactPanel from './components/ContactPanel';
 import AdminPanel from './components/AdminPanel';
 
+const STORAGE_KEY = 'operator_os_data_v1';
+
 const App: React.FC = () => {
   const [activeSection, setActiveSection] = useState<NavSection>(NavSection.STATUS);
   const [bootSequence, setBootSequence] = useState(true);
@@ -24,7 +26,7 @@ const App: React.FC = () => {
   const [clickCount, setClickCount] = useState(0);
   const [showOverrideNotice, setShowOverrideNotice] = useState(false);
   
-  // Dynamic Portfolio State
+  // Dynamic Portfolio State with LocalStorage initialization
   const [appTitle, setAppTitle] = useState('Operator-OS // Portfolio');
   const [operatorName, setOperatorName] = useState(INITIAL_NAME);
   const [operatorBio, setOperatorBio] = useState(INITIAL_BIO);
@@ -41,6 +43,39 @@ const App: React.FC = () => {
       { label: 'X-TWITTER', url: 'https://x.com' }
     ]
   });
+
+  // Load data from LocalStorage on mount
+  useEffect(() => {
+    const savedData = localStorage.getItem(STORAGE_KEY);
+    if (savedData) {
+      try {
+        const parsed = JSON.parse(savedData);
+        if (parsed.appTitle) setAppTitle(parsed.appTitle);
+        if (parsed.operatorName) setOperatorName(parsed.operatorName);
+        if (parsed.operatorBio) setOperatorBio(parsed.operatorBio);
+        if (parsed.projects) setProjects(parsed.projects);
+        if (parsed.experience) setExperience(parsed.experience);
+        if (parsed.skills) setSkills(parsed.skills);
+        if (parsed.contactData) setContactData(parsed.contactData);
+      } catch (e) {
+        console.error("Failed to load persistent data", e);
+      }
+    }
+  }, []);
+
+  // Save data whenever it changes
+  const saveAllData = useCallback(() => {
+    const dataToSave = {
+      appTitle,
+      operatorName,
+      operatorBio,
+      projects,
+      experience,
+      skills,
+      contactData
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
+  }, [appTitle, operatorName, operatorBio, projects, experience, skills, contactData]);
 
   // Sync document title
   useEffect(() => {
@@ -124,6 +159,7 @@ const App: React.FC = () => {
                 operatorBio={operatorBio} setOperatorBio={setOperatorBio}
                 contactData={contactData} setContactData={setContactData}
                 appTitle={appTitle} setAppTitle={setAppTitle}
+                onSave={saveAllData}
               />
             )}
           </div>

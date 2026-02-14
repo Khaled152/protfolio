@@ -27,6 +27,7 @@ interface AdminPanelProps {
     hireMeUrl: string;
     socials: { label: string; url: string }[] 
   }>>;
+  onSave?: () => void;
 }
 
 const AdminPanel: React.FC<AdminPanelProps> = ({ 
@@ -36,7 +37,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
   operatorName, setOperatorName,
   operatorBio, setOperatorBio,
   appTitle, setAppTitle,
-  contactData, setContactData
+  contactData, setContactData,
+  onSave
 }) => {
   const [activeTab, setActiveTab] = useState<'IDENTITY' | 'PROJECTS' | 'SKILLS' | 'EXPERIENCE' | 'CONTACT'>('IDENTITY');
 
@@ -145,6 +147,11 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
   };
   const addSocialLink = () => updateContactField('socials', [...contactData.socials, { label: 'NEW_LINK', url: 'https://' }]);
   const deleteSocialLink = (idx: number) => updateContactField('socials', contactData.socials.filter((_, i) => i !== idx));
+
+  const handleCommit = () => {
+    if (onSave) onSave();
+    alert("SYSTEM_OVERRIDE_SUCCESSFUL: DATA_COMMITTED_TO_PERSISTENT_STORAGE");
+  };
 
   return (
     <div className="flex flex-col gap-6 h-full animate-in fade-in duration-500 pb-20">
@@ -354,7 +361,12 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
 
       <div className="flex justify-end gap-4 p-4 border-t border-amber-900/30">
         <div className="text-[9px] text-amber-900 font-hud uppercase tracking-widest self-center">Warning: Persistent_Data_Override_Mode_Active</div>
-        <button className="px-8 py-2 bg-amber-500 text-black font-hud text-xs hover:bg-amber-400 transition-all shadow-[0_0_15px_rgba(245,158,11,0.3)] active:scale-95 uppercase tracking-widest">COMMIT_OVERRIDE</button>
+        <button 
+          onClick={handleCommit}
+          className="px-8 py-2 bg-amber-500 text-black font-hud text-xs hover:bg-amber-400 transition-all shadow-[0_0_15px_rgba(245,158,11,0.3)] active:scale-95 uppercase tracking-widest"
+        >
+          COMMIT_OVERRIDE
+        </button>
       </div>
     </div>
   );
