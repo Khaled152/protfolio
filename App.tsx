@@ -33,7 +33,12 @@ const App: React.FC = () => {
   const [contactData, setContactData] = useState({
     email: 'OPERATOR@NEXUS-CORP.DEV',
     phone: '+1 (555) 010-0242',
-    links: ['LINKEDIN', 'GITHUB', 'X-TWITTER']
+    hireMeUrl: 'mailto:OPERATOR@NEXUS-CORP.DEV',
+    socials: [
+      { label: 'LINKEDIN', url: 'https://linkedin.com' },
+      { label: 'GITHUB', url: 'https://github.com' },
+      { label: 'X-TWITTER', url: 'https://x.com' }
+    ]
   });
 
   useEffect(() => {
