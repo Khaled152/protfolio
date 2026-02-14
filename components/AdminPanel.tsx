@@ -149,14 +149,18 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
   const deleteSocialLink = (idx: number) => updateContactField('socials', contactData.socials.filter((_, i) => i !== idx));
 
   const handleCommit = () => {
-    if (onSave) onSave();
-    alert("SYSTEM_OVERRIDE_SUCCESSFUL: DATA_COMMITTED_TO_PERSISTENT_STORAGE");
+    if (onSave) {
+        onSave();
+        alert("SYSTEM_OVERRIDE_SUCCESSFUL: DATA_COMMITTED_TO_PERSISTENT_STORAGE");
+    } else {
+        alert("ERROR: PERSISTENCE_UPLINK_FAILURE");
+    }
   };
 
   return (
     <div className="flex flex-col gap-6 h-full animate-in fade-in duration-500 pb-20">
       <div className="flex items-center gap-4 border-b border-amber-900/50 pb-4">
-        <div className="p-2 border border-amber-500/50 bg-amber-500/10">
+        <div className="p-2 border border-amber-500/50 bg-amber-500/10 shadow-[0_0_15px_rgba(245,158,11,0.2)]">
           <svg className="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
         </div>
         <div>
@@ -171,67 +175,68 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
         ))}
       </div>
 
-      <div className="flex-1 bg-slate-950/80 border border-amber-900/30 p-6 custom-scroll overflow-y-auto min-h-0">
+      <div className="flex-1 bg-[#050505]/95 border border-amber-900/30 p-8 custom-scroll overflow-y-auto min-h-0 backdrop-blur-sm">
         
         {activeTab === 'IDENTITY' && (
-          <div className="space-y-8 max-w-2xl">
+          <div className="space-y-10 max-w-3xl">
             <div>
-              <label className="text-[10px] text-amber-700 uppercase font-hud block mb-2 tracking-widest">Application_Title_Protocol</label>
+              <label className="text-[10px] text-amber-700 uppercase font-hud block mb-3 tracking-[0.3em]">Application_Title_Protocol</label>
               <input type="text" value={appTitle} onChange={e => setAppTitle(e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-4 text-amber-200 font-mono text-sm focus:border-amber-500 outline-none uppercase tracking-widest" />
-              <div className="text-[8px] text-amber-900 mt-1 uppercase italic font-hud tracking-widest">Sets the text displayed in the browser tab</div>
+              <div className="text-[8px] text-amber-900 mt-2 uppercase italic font-hud tracking-widest">Sets the text displayed in the browser tab</div>
             </div>
             <div>
-              <label className="text-[10px] text-amber-700 uppercase font-hud block mb-2 tracking-widest">Operator_Codename</label>
+              <label className="text-[10px] text-amber-700 uppercase font-hud block mb-3 tracking-[0.3em]">Operator_Codename</label>
               <input type="text" value={operatorName} onChange={e => setOperatorName(e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-4 text-amber-200 font-hud focus:border-amber-500 outline-none uppercase tracking-widest" />
             </div>
             <div>
-              <label className="text-[10px] text-amber-700 uppercase font-hud block mb-2 tracking-widest">Operator_Biography</label>
-              <textarea value={operatorBio} onChange={e => setOperatorBio(e.target.value)} className="w-full h-40 bg-black/60 border border-amber-900/50 p-4 text-cyan-100 font-mono text-sm leading-relaxed focus:border-amber-500 outline-none resize-none" />
+              <label className="text-[10px] text-amber-700 uppercase font-hud block mb-3 tracking-[0.3em]">Operator_Biography</label>
+              <textarea value={operatorBio} onChange={e => setOperatorBio(e.target.value)} className="w-full h-48 bg-black/60 border border-amber-900/50 p-4 text-cyan-100 font-mono text-sm leading-relaxed focus:border-amber-500 outline-none resize-none" />
             </div>
           </div>
         )}
 
         {activeTab === 'PROJECTS' && (
           <div className="space-y-12">
-            <button onClick={addProject} className="w-full py-4 border border-amber-500/50 border-dashed text-amber-500 font-hud text-xs hover:bg-amber-500/10 transition-colors mb-6 uppercase tracking-widest">[+] DEPLOY_NEW_PROJECT_MANIFEST</button>
+            <button onClick={addProject} className="w-full py-5 border border-amber-500/50 border-dashed text-amber-500 font-hud text-[10px] hover:bg-amber-500/10 transition-all uppercase tracking-[0.3em] bg-amber-500/5">[+] DEPLOY_NEW_PROJECT_MANIFEST</button>
             {projects.map(p => (
-              <div key={p.id} className="relative p-6 border border-amber-900/40 bg-black/40 group mb-6">
-                <button onClick={() => deleteProject(p.id)} className="absolute top-2 right-2 p-1 text-amber-900 hover:text-rose-500 transition-colors font-hud text-[10px] uppercase tracking-tighter">[DECOMMISSION_PROJECT]</button>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="space-y-4">
+              <div key={p.id} className="relative p-8 border border-amber-900/40 bg-black/60 group mb-8">
+                <button onClick={() => deleteProject(p.id)} className="absolute top-4 right-4 p-2 text-amber-900 hover:text-rose-500 transition-colors font-hud text-[10px] uppercase tracking-tighter border border-transparent hover:border-rose-500/30 bg-black/20">[PURGE_MANIFEST]</button>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                  <div className="space-y-6">
                     <div>
-                      <label className="text-[9px] text-amber-700 uppercase block mb-1 font-hud tracking-widest">Project_Title</label>
-                      <input type="text" value={p.title} onChange={(e) => updateProject(p.id, 'title', e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-2 text-xs text-amber-200 font-hud focus:border-amber-500 outline-none uppercase" />
+                      <label className="text-[10px] text-amber-700 uppercase block mb-2 font-hud tracking-widest">Project_Title</label>
+                      <input type="text" value={p.title} onChange={(e) => updateProject(p.id, 'title', e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-3 text-xs text-amber-200 font-hud focus:border-amber-500 outline-none uppercase" />
                     </div>
                     <div>
-                      <label className="text-[9px] text-amber-700 uppercase block mb-1 font-hud tracking-widest">Subtitle // Tech Summary</label>
-                      <input type="text" value={p.subtitle || ''} onChange={(e) => updateProject(p.id, 'subtitle', e.target.value)} placeholder="e.g. REACT // TAILWIND // NODE" className="w-full bg-black/60 border border-amber-900/50 p-2 text-[10px] text-amber-500 font-hud outline-none uppercase tracking-widest" />
+                      <label className="text-[10px] text-amber-700 uppercase block mb-2 font-hud tracking-widest">Subtitle // Tech Summary</label>
+                      <input type="text" value={p.subtitle || ''} onChange={(e) => updateProject(p.id, 'subtitle', e.target.value)} placeholder="e.g. REACT // TAILWIND // NODE" className="w-full bg-black/60 border border-amber-900/50 p-3 text-[10px] text-amber-500 font-hud outline-none uppercase tracking-widest" />
                     </div>
                     <div>
-                      <label className="text-[9px] text-amber-700 uppercase block mb-1 font-hud tracking-widest">Image_Resource_URL</label>
-                      <input type="text" value={p.imageUrl || ''} onChange={(e) => updateProject(p.id, 'imageUrl', e.target.value)} placeholder="https://unsplash.com/..." className="w-full bg-black/60 border border-amber-900/50 p-2 text-[10px] text-amber-600 font-mono outline-none" />
+                      <label className="text-[10px] text-amber-700 uppercase block mb-2 font-hud tracking-widest">Image_Resource_URL</label>
+                      <input type="text" value={p.imageUrl || ''} onChange={(e) => updateProject(p.id, 'imageUrl', e.target.value)} placeholder="https://..." className="w-full bg-black/60 border border-amber-900/50 p-3 text-[10px] text-amber-600 font-mono outline-none" />
                     </div>
                     <div>
-                      <label className="text-[9px] text-amber-700 uppercase block mb-1 font-hud tracking-widest">Manifest_Description</label>
-                      <textarea value={p.description} onChange={(e) => updateProject(p.id, 'description', e.target.value)} className="w-full h-24 bg-black/60 border border-amber-900/50 p-2 text-xs text-cyan-100 font-mono focus:border-amber-500 outline-none resize-none" />
+                      <label className="text-[10px] text-amber-700 uppercase block mb-2 font-hud tracking-widest">Manifest_Description</label>
+                      <textarea value={p.description} onChange={(e) => updateProject(p.id, 'description', e.target.value)} className="w-full h-32 bg-black/60 border border-amber-900/50 p-3 text-xs text-cyan-100 font-mono focus:border-amber-500 outline-none resize-none" />
                     </div>
                   </div>
-                  <div className="space-y-6">
-                    <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-8">
+                    <div className="grid grid-cols-1 gap-6">
                       <div>
-                        <label className="text-[9px] text-amber-700 uppercase block mb-1 font-hud tracking-widest">Live_Uplink (Iframe Target)</label>
-                        <input type="text" placeholder="https://..." value={p.links?.live || ''} onChange={(e) => updateProjectLinks(p.id, 'live', e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-2 text-[10px] text-amber-500 font-mono outline-none" />
+                        <label className="text-[10px] text-amber-700 uppercase block mb-2 font-hud tracking-widest">Live_Uplink (Iframe Target)</label>
+                        <input type="text" placeholder="google.com" value={p.links?.live || ''} onChange={(e) => updateProjectLinks(p.id, 'live', e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-3 text-[10px] text-amber-500 font-mono outline-none" />
+                        <div className="text-[8px] text-amber-900 mt-1">E.G. google.com or https://example.com</div>
                       </div>
                       <div>
-                        <label className="text-[9px] text-amber-700 uppercase block mb-1 font-hud tracking-widest">Source_Repo</label>
-                        <input type="text" placeholder="https://github.com/..." value={p.links?.github || ''} onChange={(e) => updateProjectLinks(p.id, 'github', e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-2 text-[10px] text-amber-500 font-mono outline-none" />
+                        <label className="text-[10px] text-amber-700 uppercase block mb-2 font-hud tracking-widest">Source_Repo</label>
+                        <input type="text" placeholder="github.com/..." value={p.links?.github || ''} onChange={(e) => updateProjectLinks(p.id, 'github', e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-3 text-[10px] text-amber-500 font-mono outline-none" />
                       </div>
                     </div>
-                    <div className="grid grid-cols-3 gap-2">
+                    <div className="grid grid-cols-3 gap-3">
                       {['perf', 'security', 'reliability'].map(m => (
                         <div key={m}>
-                          <label className="text-[8px] text-amber-700 uppercase block mb-1 font-hud tracking-tighter">{m}</label>
-                          <input type="number" min="0" max="100" value={p.metrics[m as keyof typeof p.metrics]} onChange={(e) => updateProject(p.id, 'metrics', { ...p.metrics, [m]: parseInt(e.target.value) })} className="w-full bg-black/60 border border-amber-900/50 p-1 text-[10px] text-amber-400 font-hud" />
+                          <label className="text-[9px] text-amber-700 uppercase block mb-2 font-hud tracking-tighter">{m}</label>
+                          <input type="number" min="0" max="100" value={p.metrics[m as keyof typeof p.metrics]} onChange={(e) => updateProject(p.id, 'metrics', { ...p.metrics, [m]: parseInt(e.target.value) })} className="w-full bg-black/60 border border-amber-900/50 p-2 text-[10px] text-amber-400 font-hud" />
                         </div>
                       ))}
                     </div>
@@ -244,40 +249,40 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
 
         {activeTab === 'EXPERIENCE' && (
           <div className="space-y-12">
-            <button onClick={addExperience} className="w-full py-4 border border-amber-500/50 border-dashed text-amber-500 font-hud text-xs hover:bg-amber-500/10 transition-colors mb-6 uppercase tracking-widest">[+] ARCHIVE_NEW_CAREER_LOG</button>
+            <button onClick={addExperience} className="w-full py-5 border border-amber-500/50 border-dashed text-amber-500 font-hud text-[10px] hover:bg-amber-500/10 transition-all uppercase tracking-[0.3em] bg-amber-500/5">[+] ARCHIVE_NEW_CAREER_LOG</button>
             {experience.map(exp => (
-              <div key={exp.id} className="relative p-6 border border-amber-900/40 bg-black/40 group mb-6">
-                <button onClick={() => deleteExperience(exp.id)} className="absolute top-2 right-2 p-1 text-amber-900 hover:text-rose-500 transition-colors font-hud text-[10px] uppercase tracking-tighter">[DELETE_LOG]</button>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="space-y-4">
+              <div key={exp.id} className="relative p-8 border border-amber-900/40 bg-black/60 group mb-8">
+                <button onClick={() => deleteExperience(exp.id)} className="absolute top-4 right-4 p-2 text-amber-900 hover:text-rose-500 transition-colors font-hud text-[10px] uppercase tracking-tighter border border-transparent hover:border-rose-500/30 bg-black/20">[DELETE_LOG]</button>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                  <div className="space-y-6">
                     <div>
-                      <label className="text-[9px] text-amber-700 uppercase block mb-1 font-hud tracking-widest">Role_Title</label>
-                      <input type="text" value={exp.role} onChange={(e) => updateExperience(exp.id, 'role', e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-2 text-xs text-amber-200 font-hud focus:border-amber-500 outline-none uppercase" />
+                      <label className="text-[10px] text-amber-700 uppercase block mb-2 font-hud tracking-widest">Role_Title</label>
+                      <input type="text" value={exp.role} onChange={(e) => updateExperience(exp.id, 'role', e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-3 text-xs text-amber-200 font-hud focus:border-amber-500 outline-none uppercase" />
                     </div>
                     <div>
-                      <label className="text-[9px] text-amber-700 uppercase block mb-1 font-hud tracking-widest">HQ_Company</label>
-                      <input type="text" value={exp.company} onChange={(e) => updateExperience(exp.id, 'company', e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-2 text-xs text-amber-500 font-hud focus:border-amber-500 outline-none uppercase" />
+                      <label className="text-[10px] text-amber-700 uppercase block mb-2 font-hud tracking-widest">HQ_Company</label>
+                      <input type="text" value={exp.company} onChange={(e) => updateExperience(exp.id, 'company', e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-3 text-xs text-amber-500 font-hud focus:border-amber-500 outline-none uppercase" />
                     </div>
                     <div>
-                      <label className="text-[9px] text-amber-700 uppercase block mb-1 font-hud tracking-widest">Time_Period</label>
-                      <input type="text" value={exp.period} onChange={(e) => updateExperience(exp.id, 'period', e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-2 text-xs text-amber-400 font-hud focus:border-amber-500 outline-none uppercase" />
+                      <label className="text-[10px] text-amber-700 uppercase block mb-2 font-hud tracking-widest">Time_Period</label>
+                      <input type="text" value={exp.period} onChange={(e) => updateExperience(exp.id, 'period', e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-3 text-xs text-amber-400 font-hud focus:border-amber-500 outline-none uppercase" />
                     </div>
                   </div>
-                  <div className="space-y-4">
+                  <div className="space-y-6">
                     <div>
-                      <label className="text-[9px] text-amber-700 uppercase block mb-1 font-hud tracking-widest">Briefing_Summary</label>
-                      <textarea value={exp.description} onChange={(e) => updateExperience(exp.id, 'description', e.target.value)} className="w-full h-24 bg-black/60 border border-amber-900/50 p-2 text-xs text-cyan-100 font-mono focus:border-amber-500 outline-none resize-none" />
+                      <label className="text-[10px] text-amber-700 uppercase block mb-2 font-hud tracking-widest">Briefing_Summary</label>
+                      <textarea value={exp.description} onChange={(e) => updateExperience(exp.id, 'description', e.target.value)} className="w-full h-32 bg-black/60 border border-amber-900/50 p-3 text-xs text-cyan-100 font-mono focus:border-amber-500 outline-none resize-none" />
                     </div>
                     <div>
-                      <div className="flex justify-between items-center mb-1">
-                        <label className="text-[9px] text-amber-700 uppercase font-hud tracking-widest">Milestones</label>
-                        <button onClick={() => addAchievement(exp.id)} className="text-[8px] text-amber-500 hover:text-amber-300 font-hud tracking-widest">[ADD_ENTRY]</button>
+                      <div className="flex justify-between items-center mb-2">
+                        <label className="text-[10px] text-amber-700 uppercase font-hud tracking-widest">Milestones</label>
+                        <button onClick={() => addAchievement(exp.id)} className="text-[9px] text-amber-500 hover:text-amber-300 font-hud tracking-widest px-2 py-0.5 border border-amber-500/30 hover:bg-amber-500/10">[ADD_ENTRY]</button>
                       </div>
-                      <div className="space-y-2">
+                      <div className="space-y-3">
                         {exp.achievements.map((ach, idx) => (
-                          <div key={idx} className="flex gap-2">
-                            <input type="text" value={ach} onChange={(e) => updateAchievement(exp.id, idx, e.target.value)} className="flex-1 bg-black/40 border border-amber-900/30 p-1 text-[10px] text-amber-300 font-mono outline-none" />
-                            <button onClick={() => deleteAchievement(exp.id, idx)} className="text-rose-500 text-[10px] px-2 hover:bg-rose-500/10 transition-colors">X</button>
+                          <div key={idx} className="flex gap-2 group/ach">
+                            <input type="text" value={ach} onChange={(e) => updateAchievement(exp.id, idx, e.target.value)} className="flex-1 bg-black/40 border border-amber-900/30 p-2 text-[10px] text-amber-300 font-mono outline-none" />
+                            <button onClick={() => deleteAchievement(exp.id, idx)} className="text-rose-500 text-[10px] px-3 border border-rose-500/20 hover:bg-rose-500/10 transition-colors">X</button>
                           </div>
                         ))}
                       </div>
@@ -290,25 +295,25 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
         )}
 
         {activeTab === 'SKILLS' && (
-          <div className="space-y-6">
-            <button onClick={addSkill} className="w-full py-4 border border-amber-500/50 border-dashed text-amber-500 font-hud text-xs hover:bg-amber-500/10 transition-colors uppercase tracking-widest">[+] INTEGRATE_NEW_SKILL_MODULE</button>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-10">
+            <button onClick={addSkill} className="w-full py-5 border border-amber-500/50 border-dashed text-amber-500 font-hud text-[10px] hover:bg-amber-500/10 transition-all uppercase tracking-[0.3em] bg-amber-500/5">[+] INTEGRATE_NEW_SKILL_MODULE</button>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {skills.map((s, idx) => (
-                <div key={idx} className="p-4 border border-amber-900/20 bg-amber-950/5 flex flex-col gap-4 relative group">
-                  <button onClick={() => deleteSkill(idx)} className="absolute top-2 right-2 text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity font-hud text-[8px] uppercase">[PURGE]</button>
-                  <div className="grid grid-cols-2 gap-2">
+                <div key={idx} className="p-6 border border-amber-900/20 bg-amber-950/10 flex flex-col gap-5 relative group">
+                  <button onClick={() => deleteSkill(idx)} className="absolute top-3 right-3 text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity font-hud text-[9px] uppercase tracking-widest border border-rose-500/20 px-2 bg-black/40">[PURGE]</button>
+                  <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="text-[9px] text-amber-700 uppercase block mb-1 font-hud tracking-widest">Module_Name</label>
-                      <input type="text" value={s.name} onChange={(e) => updateSkill(idx, 'name', e.target.value.toUpperCase())} className="w-full bg-black/60 border border-amber-900/50 p-2 text-xs text-amber-400 font-hud uppercase outline-none" />
+                      <label className="text-[10px] text-amber-700 uppercase block mb-2 font-hud tracking-widest">Module_Name</label>
+                      <input type="text" value={s.name} onChange={(e) => updateSkill(idx, 'name', e.target.value.toUpperCase())} className="w-full bg-black/60 border border-amber-900/50 p-3 text-xs text-amber-400 font-hud uppercase outline-none" />
                     </div>
                     <div>
-                      <label className="text-[9px] text-amber-700 uppercase block mb-1 font-hud tracking-widest">Efficiency ({s.level}%)</label>
-                      <input type="range" min="0" max="100" value={s.level} onChange={(e) => updateSkill(idx, 'level', parseInt(e.target.value))} className="w-full accent-amber-500" />
+                      <label className="text-[10px] text-amber-700 uppercase block mb-2 font-hud tracking-widest">Efficiency ({s.level}%)</label>
+                      <input type="range" min="0" max="100" value={s.level} onChange={(e) => updateSkill(idx, 'level', parseInt(e.target.value))} className="w-full h-8 accent-amber-500 bg-transparent cursor-pointer" />
                     </div>
                   </div>
                   <div>
-                    <label className="text-[9px] text-amber-700 uppercase block mb-1 font-hud tracking-widest">Tactical_Details</label>
-                    <textarea value={s.details} onChange={(e) => updateSkill(idx, 'details', e.target.value)} className="w-full h-16 bg-black/60 border border-amber-900/50 p-2 text-[10px] text-cyan-200 font-mono resize-none outline-none focus:border-amber-500" />
+                    <label className="text-[10px] text-amber-700 uppercase block mb-2 font-hud tracking-widest">Tactical_Details</label>
+                    <textarea value={s.details} onChange={(e) => updateSkill(idx, 'details', e.target.value)} className="w-full h-24 bg-black/60 border border-amber-900/50 p-3 text-[10px] text-cyan-200 font-mono resize-none outline-none focus:border-amber-500" />
                   </div>
                 </div>
               ))}
@@ -317,39 +322,39 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
         )}
 
         {activeTab === 'CONTACT' && (
-          <div className="space-y-10 max-w-3xl">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-12 max-w-4xl">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
               <div>
-                <label className="text-[10px] text-amber-700 uppercase font-hud block mb-2 tracking-widest">Email_Target</label>
-                <input type="email" value={contactData.email} onChange={e => updateContactField('email', e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-3 text-amber-200 font-mono outline-none focus:border-amber-500" />
+                <label className="text-[11px] text-amber-700 uppercase font-hud block mb-3 tracking-[0.2em]">Email_Target_Node</label>
+                <input type="email" value={contactData.email} onChange={e => updateContactField('email', e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-4 text-amber-200 font-mono text-sm outline-none focus:border-amber-500" />
               </div>
               <div>
-                <label className="text-[10px] text-amber-700 uppercase font-hud block mb-2 tracking-widest">Phone_Uplink</label>
-                <input type="text" value={contactData.phone} onChange={e => updateContactField('phone', e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-3 text-amber-200 font-mono outline-none focus:border-amber-500" />
+                <label className="text-[11px] text-amber-700 uppercase font-hud block mb-3 tracking-[0.2em]">Satellite_Phone_Uplink</label>
+                <input type="text" value={contactData.phone} onChange={e => updateContactField('phone', e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-4 text-amber-200 font-mono text-sm outline-none focus:border-amber-500" />
               </div>
             </div>
 
             <div>
-              <label className="text-[10px] text-amber-700 uppercase font-hud block mb-2 tracking-widest">Hire_Me_Action_URL</label>
-              <input type="text" value={contactData.hireMeUrl} onChange={e => updateContactField('hireMeUrl', e.target.value)} placeholder="mailto:you@example.com" className="w-full bg-black/60 border border-amber-900/50 p-3 text-amber-200 font-mono outline-none focus:border-amber-500" />
+              <label className="text-[11px] text-amber-700 uppercase font-hud block mb-3 tracking-[0.2em]">Hire_Me_Action_Protocol_URL</label>
+              <input type="text" value={contactData.hireMeUrl} onChange={e => updateContactField('hireMeUrl', e.target.value)} placeholder="mailto:you@example.com" className="w-full bg-black/60 border border-amber-900/50 p-4 text-amber-200 font-mono text-sm outline-none focus:border-amber-500" />
             </div>
 
-            <div className="space-y-4">
-              <div className="flex justify-between items-center border-b border-amber-900/30 pb-2">
-                <label className="text-[10px] text-amber-700 uppercase font-hud tracking-widest">Social_Uplinks</label>
-                <button onClick={addSocialLink} className="text-[9px] text-amber-500 hover:text-amber-300 font-hud tracking-widest">[+] ADD_LINK</button>
+            <div className="space-y-6">
+              <div className="flex justify-between items-center border-b border-amber-900/40 pb-3">
+                <label className="text-[11px] text-amber-700 uppercase font-hud tracking-[0.3em]">Encrypted_Social_Uplinks</label>
+                <button onClick={addSocialLink} className="text-[10px] text-amber-500 hover:text-amber-300 font-hud tracking-[0.2em] px-3 py-1 border border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/10">[+] NEW_CHANNEL</button>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {contactData.socials.map((social, idx) => (
-                  <div key={idx} className="p-4 bg-amber-950/5 border border-amber-900/20 space-y-3 relative group">
-                    <button onClick={() => deleteSocialLink(idx)} className="absolute top-2 right-2 text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity text-[10px] font-hud">[PURGE]</button>
+                  <div key={idx} className="p-6 bg-amber-950/5 border border-amber-900/30 space-y-4 relative group">
+                    <button onClick={() => deleteSocialLink(idx)} className="absolute top-4 right-4 text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity text-[10px] font-hud border border-rose-500/30 px-2 bg-black/40">[PURGE]</button>
                     <div>
-                      <label className="text-[8px] text-amber-800 uppercase block mb-1">Label</label>
-                      <input type="text" value={social.label} onChange={e => updateSocialLink(idx, 'label', e.target.value.toUpperCase())} className="w-full bg-black/40 border border-amber-900/30 p-2 text-[10px] text-amber-400 font-hud outline-none" />
+                      <label className="text-[9px] text-amber-800 uppercase block mb-2 font-hud">Label</label>
+                      <input type="text" value={social.label} onChange={e => updateSocialLink(idx, 'label', e.target.value.toUpperCase())} className="w-full bg-black/40 border border-amber-900/30 p-3 text-[10px] text-amber-400 font-hud outline-none" />
                     </div>
                     <div>
-                      <label className="text-[8px] text-amber-800 uppercase block mb-1">URL</label>
-                      <input type="text" value={social.url} onChange={e => updateSocialLink(idx, 'url', e.target.value)} className="w-full bg-black/40 border border-amber-900/30 p-2 text-[10px] text-amber-600 font-mono outline-none" />
+                      <label className="text-[9px] text-amber-800 uppercase block mb-2 font-hud">URL_Target</label>
+                      <input type="text" value={social.url} onChange={e => updateSocialLink(idx, 'url', e.target.value)} className="w-full bg-black/40 border border-amber-900/30 p-3 text-[10px] text-amber-600 font-mono outline-none" />
                     </div>
                   </div>
                 ))}
@@ -359,11 +364,14 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
         )}
       </div>
 
-      <div className="flex justify-end gap-4 p-4 border-t border-amber-900/30">
-        <div className="text-[9px] text-amber-900 font-hud uppercase tracking-widest self-center">Warning: Persistent_Data_Override_Mode_Active</div>
+      <div className="fixed bottom-0 left-20 right-0 h-20 bg-[#050505] border-t border-amber-900/40 flex justify-end items-center px-10 gap-6 z-50">
+        <div className="flex flex-col items-end">
+          <div className="text-[10px] text-amber-500 font-hud uppercase animate-pulse">Root_Access_Confirmed</div>
+          <div className="text-[8px] text-amber-900 font-hud uppercase tracking-widest italic">All changes staged for persistent override</div>
+        </div>
         <button 
           onClick={handleCommit}
-          className="px-8 py-2 bg-amber-500 text-black font-hud text-xs hover:bg-amber-400 transition-all shadow-[0_0_15px_rgba(245,158,11,0.3)] active:scale-95 uppercase tracking-widest"
+          className="px-12 py-4 bg-amber-500 text-black font-hud text-xs hover:bg-amber-400 transition-all shadow-[0_0_25px_rgba(245,158,11,0.5)] active:scale-95 uppercase tracking-[0.4em] font-bold"
         >
           COMMIT_OVERRIDE
         </button>
