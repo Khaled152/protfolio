@@ -6,7 +6,8 @@ import {
   EXPERIENCE as INITIAL_EXPERIENCE, 
   SKILLS as INITIAL_SKILLS,
   OPERATOR_NAME as INITIAL_NAME,
-  OPERATOR_BIO as INITIAL_BIO
+  OPERATOR_BIO as INITIAL_BIO,
+  DEFAULT_TACTICAL_TAGS
 } from './constants';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
@@ -26,10 +27,11 @@ const App: React.FC = () => {
   const [clickCount, setClickCount] = useState(0);
   const [showOverrideNotice, setShowOverrideNotice] = useState(false);
   
-  // Dynamic Portfolio State with LocalStorage initialization
+  // Dynamic Portfolio State
   const [appTitle, setAppTitle] = useState('Operator-OS // Portfolio');
   const [operatorName, setOperatorName] = useState(INITIAL_NAME);
   const [operatorBio, setOperatorBio] = useState(INITIAL_BIO);
+  const [tacticalTags, setTacticalTags] = useState<string[]>(DEFAULT_TACTICAL_TAGS);
   const [projects, setProjects] = useState<Project[]>(INITIAL_PROJECTS);
   const [experience, setExperience] = useState<Experience[]>(INITIAL_EXPERIENCE);
   const [skills, setSkills] = useState<Skill[]>(INITIAL_SKILLS);
@@ -53,6 +55,7 @@ const App: React.FC = () => {
         if (parsed.appTitle) setAppTitle(parsed.appTitle);
         if (parsed.operatorName) setOperatorName(parsed.operatorName);
         if (parsed.operatorBio) setOperatorBio(parsed.operatorBio);
+        if (parsed.tacticalTags) setTacticalTags(parsed.tacticalTags);
         if (parsed.projects) setProjects(parsed.projects);
         if (parsed.experience) setExperience(parsed.experience);
         if (parsed.skills) setSkills(parsed.skills);
@@ -69,13 +72,14 @@ const App: React.FC = () => {
       appTitle,
       operatorName,
       operatorBio,
+      tacticalTags,
       projects,
       experience,
       skills,
       contactData
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
-  }, [appTitle, operatorName, operatorBio, projects, experience, skills, contactData]);
+  }, [appTitle, operatorName, operatorBio, tacticalTags, projects, experience, skills, contactData]);
 
   // Sync document title
   useEffect(() => {
@@ -145,7 +149,7 @@ const App: React.FC = () => {
         
         <main className="flex-1 flex flex-col overflow-hidden">
           <div className="flex-1 overflow-y-auto pr-2 custom-scroll pb-4">
-            {activeSection === NavSection.STATUS && <StatusPanel operatorBio={operatorBio} />}
+            {activeSection === NavSection.STATUS && <StatusPanel operatorBio={operatorBio} tacticalTags={tacticalTags} />}
             {activeSection === NavSection.SKILLS && <SkillsPanel skills={skills} />}
             {activeSection === NavSection.EXPERIENCE && <ExperiencePanel experience={experience} />}
             {activeSection === NavSection.PROJECTS && <ProjectPanel projects={projects} />}
@@ -157,6 +161,7 @@ const App: React.FC = () => {
                 experience={experience} setExperience={setExperience}
                 operatorName={operatorName} setOperatorName={setOperatorName}
                 operatorBio={operatorBio} setOperatorBio={setOperatorBio}
+                tacticalTags={tacticalTags} setTacticalTags={setTacticalTags}
                 contactData={contactData} setContactData={setContactData}
                 appTitle={appTitle} setAppTitle={setAppTitle}
                 onSave={saveAllData}

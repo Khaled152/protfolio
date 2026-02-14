@@ -3,9 +3,10 @@ import React from 'react';
 
 interface StatusPanelProps {
   operatorBio: string;
+  tacticalTags: string[];
 }
 
-const StatusPanel: React.FC<StatusPanelProps> = ({ operatorBio }) => {
+const StatusPanel: React.FC<StatusPanelProps> = ({ operatorBio, tacticalTags }) => {
   return (
     <div className="flex flex-col min-h-full p-2 md:p-4">
       <div className="hud-border hud-border-tl hud-border-br p-6 md:p-10 w-full bg-slate-900/40 backdrop-blur-md relative overflow-hidden group flex-1">
@@ -38,8 +39,8 @@ const StatusPanel: React.FC<StatusPanelProps> = ({ operatorBio }) => {
           </div>
           
           <div className="flex flex-wrap gap-4 pt-8 border-t border-cyan-900/30">
-            {['REMOTE_READY', 'FULL_TIME', 'CONSULTING', 'ARCHITECT', 'FRONTEND_LEAD', 'UI_ENGINEER', 'MISSION_CRITICAL'].map(tag => (
-              <span key={tag} className="px-4 py-2 border border-cyan-800 text-xs bg-cyan-900/10 font-hud text-cyan-600 hover:text-cyan-300 hover:border-cyan-400 hover:bg-cyan-500/10 transition-all cursor-default tracking-widest">
+            {tacticalTags.map(tag => (
+              <span key={tag} className="px-4 py-2 border border-cyan-800 text-xs bg-cyan-900/10 font-hud text-cyan-600 hover:text-cyan-300 hover:border-cyan-400 hover:bg-cyan-500/10 transition-all cursor-default tracking-widest uppercase">
                 {tag}
               </span>
             ))}

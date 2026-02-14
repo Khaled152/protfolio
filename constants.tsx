@@ -12,6 +12,7 @@ export const COLORS = {
 
 export const OPERATOR_NAME = "JONATHAN DOE";
 export const OPERATOR_BIO = "Strategic Fullstack Engineer with a decade of experience crafting high-stakes web applications. Specialist in distributed systems, real-time data visualization, and reactive UI architecture. Committed to technical excellence and mission success.";
+export const DEFAULT_TACTICAL_TAGS = ['REMOTE_READY', 'FULL_TIME', 'CONSULTING', 'ARCHITECT', 'FRONTEND_LEAD', 'UI_ENGINEER', 'MISSION_CRITICAL'];
 
 export const PROJECTS: Project[] = [
   {
