@@ -22,6 +22,10 @@ export interface Project {
   description: string;
   technologies: string[];
   status: 'ONLINE' | 'STANDBY' | 'DEVELOPMENT';
+  links?: {
+    live?: string;
+    github?: string;
+  };
   metrics: {
     perf: number;
     security: number;
