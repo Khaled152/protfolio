@@ -62,9 +62,9 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
   };
 
   const addAchievement = (expId: string) => {
-    setExperience(prev => setExperience(prev.map(exp => 
+    setExperience(prev => prev.map(exp => 
       exp.id === expId ? { ...exp, achievements: [...exp.achievements, 'NEW_ACHIEVEMENT_LOG'] } : exp
-    )));
+    ));
   };
 
   const deleteAchievement = (expId: string, idx: number) => {
@@ -154,13 +154,28 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
 
   // --- CONTACT CRUD ---
   const updateContactField = (field: string, val: any) => setContactData(prev => ({ ...prev, [field]: val }));
+  
   const updateSocialLink = (idx: number, field: 'label' | 'url', val: string) => {
-    const next = [...contactData.socials];
-    next[idx] = { ...next[idx], [field]: val };
-    updateContactField('socials', next);
+    setContactData(prev => {
+      const nextSocials = [...prev.socials];
+      nextSocials[idx] = { ...nextSocials[idx], [field]: val };
+      return { ...prev, socials: nextSocials };
+    });
   };
-  const addSocialLink = () => updateContactField('socials', [...contactData.socials, { label: 'NEW_LINK', url: 'https://' }]);
-  const deleteSocialLink = (idx: number) => updateContactField('socials', contactData.socials.filter((_, i) => i !== idx));
+
+  const addSocialLink = () => {
+    setContactData(prev => ({
+      ...prev,
+      socials: [...prev.socials, { label: 'NEW_NODE', url: 'https://' }]
+    }));
+  };
+
+  const deleteSocialLink = (idx: number) => {
+    setContactData(prev => ({
+      ...prev,
+      socials: prev.socials.filter((_, i) => i !== idx)
+    }));
+  };
 
   const handleCommit = () => {
     if (onSave) {
@@ -230,7 +245,6 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                   </div>
                 ))}
               </div>
-              <div className="text-[8px] text-amber-900 mt-2 uppercase italic font-hud tracking-widest">These tags appear on the main Profile HUD</div>
             </div>
           </div>
         )}
@@ -286,7 +300,33 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
           </div>
         )}
 
-        {/* Other tabs remain the same as previous version... */}
+        {activeTab === 'SKILLS' && (
+          <div className="space-y-10">
+            <button onClick={addSkill} className="w-full py-5 border border-amber-500/50 border-dashed text-amber-500 font-hud text-[10px] hover:bg-amber-500/10 transition-all uppercase tracking-[0.3em] bg-amber-500/5">[+] INTEGRATE_NEW_SKILL_MODULE</button>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {skills.map((s, idx) => (
+                <div key={idx} className="p-6 border border-amber-900/20 bg-amber-950/10 flex flex-col gap-5 relative group">
+                  <button onClick={() => deleteSkill(idx)} className="absolute top-3 right-3 text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity font-hud text-[9px] uppercase tracking-widest border border-rose-500/20 px-2 bg-black/40">[PURGE]</button>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-[10px] text-amber-700 uppercase block mb-2 font-hud tracking-widest">Module_Name</label>
+                      <input type="text" value={s.name} onChange={(e) => updateSkill(idx, 'name', e.target.value.toUpperCase())} className="w-full bg-black/60 border border-amber-900/50 p-3 text-xs text-amber-400 font-hud uppercase outline-none" />
+                    </div>
+                    <div>
+                      <label className="text-[10px] text-amber-700 uppercase block mb-2 font-hud tracking-widest">Efficiency ({s.level}%)</label>
+                      <input type="range" min="0" max="100" value={s.level} onChange={(e) => updateSkill(idx, 'level', parseInt(e.target.value))} className="w-full h-8 accent-amber-500 bg-transparent cursor-pointer" />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-[10px] text-amber-700 uppercase block mb-2 font-hud tracking-widest">Tactical_Details</label>
+                    <textarea value={s.details} onChange={(e) => updateSkill(idx, 'details', e.target.value)} className="w-full h-24 bg-black/60 border border-amber-900/50 p-3 text-[10px] text-cyan-200 font-mono resize-none outline-none focus:border-amber-500" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {activeTab === 'EXPERIENCE' && (
           <div className="space-y-12">
             <button onClick={addExperience} className="w-full py-5 border border-amber-500/50 border-dashed text-amber-500 font-hud text-[10px] hover:bg-amber-500/10 transition-all uppercase tracking-[0.3em] bg-amber-500/5">[+] ARCHIVE_NEW_CAREER_LOG</button>
@@ -334,33 +374,6 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
           </div>
         )}
 
-        {activeTab === 'SKILLS' && (
-          <div className="space-y-10">
-            <button onClick={addSkill} className="w-full py-5 border border-amber-500/50 border-dashed text-amber-500 font-hud text-[10px] hover:bg-amber-500/10 transition-all uppercase tracking-[0.3em] bg-amber-500/5">[+] INTEGRATE_NEW_SKILL_MODULE</button>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {skills.map((s, idx) => (
-                <div key={idx} className="p-6 border border-amber-900/20 bg-amber-950/10 flex flex-col gap-5 relative group">
-                  <button onClick={() => deleteSkill(idx)} className="absolute top-3 right-3 text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity font-hud text-[9px] uppercase tracking-widest border border-rose-500/20 px-2 bg-black/40">[PURGE]</button>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="text-[10px] text-amber-700 uppercase block mb-2 font-hud tracking-widest">Module_Name</label>
-                      <input type="text" value={s.name} onChange={(e) => updateSkill(idx, 'name', e.target.value.toUpperCase())} className="w-full bg-black/60 border border-amber-900/50 p-3 text-xs text-amber-400 font-hud uppercase outline-none" />
-                    </div>
-                    <div>
-                      <label className="text-[10px] text-amber-700 uppercase block mb-2 font-hud tracking-widest">Efficiency ({s.level}%)</label>
-                      <input type="range" min="0" max="100" value={s.level} onChange={(e) => updateSkill(idx, 'level', parseInt(e.target.value))} className="w-full h-8 accent-amber-500 bg-transparent cursor-pointer" />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="text-[10px] text-amber-700 uppercase block mb-2 font-hud tracking-widest">Tactical_Details</label>
-                    <textarea value={s.details} onChange={(e) => updateSkill(idx, 'details', e.target.value)} className="w-full h-24 bg-black/60 border border-amber-900/50 p-3 text-[10px] text-cyan-200 font-mono resize-none outline-none focus:border-amber-500" />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
         {activeTab === 'CONTACT' && (
           <div className="space-y-12 max-w-4xl">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
@@ -373,7 +386,34 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                 <input type="text" value={contactData.phone} onChange={e => updateContactField('phone', e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-4 text-amber-200 font-mono text-sm outline-none focus:border-amber-500" />
               </div>
             </div>
-            {/* ... other contact fields ... */}
+
+            <div>
+              <label className="text-[11px] text-amber-700 uppercase font-hud block mb-3 tracking-[0.2em]">Hire_Me_Protocol_URL</label>
+              <input type="text" value={contactData.hireMeUrl} onChange={e => updateContactField('hireMeUrl', e.target.value)} placeholder="mailto:you@example.com" className="w-full bg-black/60 border border-amber-900/50 p-4 text-amber-200 font-mono text-sm outline-none focus:border-amber-500" />
+              <div className="text-[8px] text-amber-900 mt-2 uppercase italic font-hud tracking-widest">Sets the primary action button destination</div>
+            </div>
+
+            <div className="space-y-6">
+              <div className="flex justify-between items-center border-b border-amber-900/40 pb-3">
+                <label className="text-[11px] text-amber-700 uppercase font-hud tracking-[0.3em]">Encrypted_Social_Profile_Nodes</label>
+                <button onClick={addSocialLink} className="text-[10px] text-amber-500 hover:text-amber-300 font-hud tracking-[0.2em] px-3 py-1 border border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/10">[+] NEW_CHANNEL</button>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {contactData.socials.map((social, idx) => (
+                  <div key={idx} className="p-6 bg-amber-950/5 border border-amber-900/30 space-y-4 relative group">
+                    <button onClick={() => deleteSocialLink(idx)} className="absolute top-4 right-4 text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity text-[10px] font-hud border border-rose-500/30 px-2 bg-black/40 hover:bg-rose-500/10">[PURGE]</button>
+                    <div>
+                      <label className="text-[9px] text-amber-800 uppercase block mb-2 font-hud">Channel_Label</label>
+                      <input type="text" value={social.label} onChange={e => updateSocialLink(idx, 'label', e.target.value.toUpperCase())} className="w-full bg-black/40 border border-amber-900/30 p-3 text-[10px] text-amber-400 font-hud outline-none focus:border-amber-500" />
+                    </div>
+                    <div>
+                      <label className="text-[9px] text-amber-800 uppercase block mb-2 font-hud">Target_Access_URL</label>
+                      <input type="text" value={social.url} onChange={e => updateSocialLink(idx, 'url', e.target.value)} className="w-full bg-black/40 border border-amber-900/30 p-3 text-[10px] text-amber-600 font-mono outline-none focus:border-amber-500" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         )}
       </div>
