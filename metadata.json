@@ -1,0 +1,7 @@
+{
+  "name": "Operator-OS Portfolio",
+  "description": "A high-tech, HUD-style portfolio for a web developer featuring real-time system monitoring, project scanning, and a Gemini-powered tactical assistant.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
