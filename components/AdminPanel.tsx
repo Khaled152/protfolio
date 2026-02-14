@@ -37,37 +37,110 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'IDENTITY' | 'PROJECTS' | 'SKILLS' | 'EXPERIENCE' | 'CONTACT'>('IDENTITY');
 
-  // --- CONTACT ---
-  const updateContactField = (field: string, val: any) => {
-    setContactData(prev => ({ ...prev, [field]: val }));
+  // --- EXPERIENCE CRUD ---
+  const updateExperience = (id: string, field: keyof Experience, value: any) => {
+    setExperience(prev => prev.map(exp => exp.id === id ? { ...exp, [field]: value } : exp));
   };
 
-  const updateSocialLink = (idx: number, field: 'label' | 'url', val: string) => {
-    const nextSocials = [...contactData.socials];
-    nextSocials[idx] = { ...nextSocials[idx], [field]: val };
-    updateContactField('socials', nextSocials);
+  const updateAchievement = (expId: string, idx: number, value: string) => {
+    setExperience(prev => prev.map(exp => {
+      if (exp.id === expId) {
+        const nextAch = [...exp.achievements];
+        nextAch[idx] = value;
+        return { ...exp, achievements: nextAch };
+      }
+      return exp;
+    }));
   };
 
-  const addSocialLink = () => {
-    updateContactField('socials', [...contactData.socials, { label: 'NEW_LINK', url: 'https://' }]);
+  const addAchievement = (expId: string) => {
+    setExperience(prev => prev.map(exp => 
+      exp.id === expId ? { ...exp, achievements: [...exp.achievements, 'NEW_ACHIEVEMENT_LOG'] } : exp
+    ));
   };
 
-  const deleteSocialLink = (idx: number) => {
-    updateContactField('socials', contactData.socials.filter((_, i) => i !== idx));
+  const deleteAchievement = (expId: string, idx: number) => {
+    setExperience(prev => prev.map(exp => 
+      exp.id === expId ? { ...exp, achievements: exp.achievements.filter((_, i) => i !== idx) } : exp
+    ));
   };
 
-  // Other CRUD methods (projects, skills, experience) remain unchanged...
+  const addExperience = () => {
+    const newId = `EXP-${Math.floor(Math.random() * 9000) + 1000}`;
+    setExperience(prev => [...prev, {
+      id: newId,
+      role: 'NEW_ROLE',
+      company: 'NEW_CORP',
+      period: '2024 - PRESENT',
+      description: 'Role mission briefing pending...',
+      achievements: ['Initial milestone recorded']
+    }]);
+  };
+
+  const deleteExperience = (id: string) => {
+    if (confirm(`PURGE CAREER LOG ${id}?`)) {
+      setExperience(prev => prev.filter(e => e.id !== id));
+    }
+  };
+
+  // --- SKILLS CRUD ---
+  const updateSkill = (idx: number, field: keyof Skill, value: any) => {
+    setSkills(prev => {
+      const next = [...prev];
+      next[idx] = { ...next[idx], [field]: value };
+      return next;
+    });
+  };
+
+  const addSkill = () => {
+    setSkills(prev => [...prev, { 
+      name: 'NEW_MODULE', 
+      level: 50, 
+      color: '#22d3ee', 
+      details: 'Module analysis pending...' 
+    }]);
+  };
+
+  const deleteSkill = (idx: number) => {
+    if (confirm("PURGE SKILL MODULE?")) {
+      setSkills(prev => prev.filter((_, i) => i !== idx));
+    }
+  };
+
+  // --- PROJECTS CRUD ---
   const updateProject = (id: string, field: keyof Project, value: any) => {
     setProjects(prev => prev.map(p => p.id === id ? { ...p, [field]: value } : p));
   };
-  const updateProjectLinks = (id: string, linkType: 'live' | 'github', value: string) => {
-    setProjects(prev => prev.map(p => p.id === id ? { ...p, links: { ...p.links, [linkType]: value } } : p));
+
+  const updateProjectLinks = (id: string, type: 'live' | 'github', value: string) => {
+    setProjects(prev => prev.map(p => p.id === id ? { ...p, links: { ...p.links, [type]: value } } : p));
   };
+
   const addProject = () => {
     const newId = `P-${Math.floor(Math.random() * 9000) + 1000}`;
-    setProjects(prev => [...prev, { id: newId, title: 'NEW_PROJECT', category: 'UNSET', description: '', technologies: ['React'], status: 'DEVELOPMENT', links: { live: '', github: '' }, metrics: { perf: 50, security: 50, reliability: 50 } }]);
+    setProjects(prev => [...prev, { 
+      id: newId, 
+      title: 'NEW_PROJECT', 
+      category: 'UNSET', 
+      description: '', 
+      technologies: ['React'], 
+      status: 'DEVELOPMENT', 
+      links: { live: '', github: '' }, 
+      metrics: { perf: 50, security: 50, reliability: 50 } 
+    }]);
   };
+
   const deleteProject = (id: string) => confirm(`PURGE ${id}?`) && setProjects(prev => prev.filter(p => p.id !== id));
+
+  // --- CONTACT CRUD ---
+  const updateContactField = (field: string, val: any) => setContactData(prev => ({ ...prev, [field]: val }));
+  const updateSocialLink = (idx: number, field: 'label' | 'url', val: string) => {
+    const next = [...contactData.socials];
+    next[idx] = { ...next[idx], [field]: val };
+    updateContactField('socials', next);
+  };
+  const addSocialLink = () => updateContactField('socials', [...contactData.socials, { label: 'NEW_LINK', url: 'https://' }]);
+  const deleteSocialLink = (idx: number) => updateContactField('socials', contactData.socials.filter((_, i) => i !== idx));
 
   return (
     <div className="flex flex-col gap-6 h-full animate-in fade-in duration-500 pb-20">
@@ -88,49 +161,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
       </div>
 
       <div className="flex-1 bg-slate-950/80 border border-amber-900/30 p-6 custom-scroll overflow-y-auto min-h-0">
-        {activeTab === 'CONTACT' && (
-          <div className="space-y-10 max-w-3xl">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="text-[10px] text-amber-700 uppercase font-hud block mb-2 tracking-widest">Email_Target</label>
-                <input type="email" value={contactData.email} onChange={e => updateContactField('email', e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-3 text-amber-200 font-mono outline-none focus:border-amber-500" />
-              </div>
-              <div>
-                <label className="text-[10px] text-amber-700 uppercase font-hud block mb-2 tracking-widest">Phone_Uplink</label>
-                <input type="text" value={contactData.phone} onChange={e => updateContactField('phone', e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-3 text-amber-200 font-mono outline-none focus:border-amber-500" />
-              </div>
-            </div>
-
-            <div>
-              <label className="text-[10px] text-amber-700 uppercase font-hud block mb-2 tracking-widest">Hire_Me_Action_URL (Email or Link)</label>
-              <input type="text" value={contactData.hireMeUrl} onChange={e => updateContactField('hireMeUrl', e.target.value)} placeholder="mailto:you@example.com or https://..." className="w-full bg-black/60 border border-amber-900/50 p-3 text-amber-200 font-mono outline-none focus:border-amber-500" />
-            </div>
-
-            <div className="space-y-4">
-              <div className="flex justify-between items-center border-b border-amber-900/30 pb-2">
-                <label className="text-[10px] text-amber-700 uppercase font-hud tracking-widest">Social_Profile_Links</label>
-                <button onClick={addSocialLink} className="text-[9px] text-amber-500 hover:text-amber-300 font-hud tracking-widest">[+] ADD_LINK</button>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {contactData.socials.map((social, idx) => (
-                  <div key={idx} className="p-4 bg-amber-950/5 border border-amber-900/20 space-y-3 relative group">
-                    <button onClick={() => deleteSocialLink(idx)} className="absolute top-2 right-2 text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity text-[10px]">PURGE</button>
-                    <div>
-                      <label className="text-[8px] text-amber-800 uppercase block mb-1">Label</label>
-                      <input type="text" value={social.label} onChange={e => updateSocialLink(idx, 'label', e.target.value.toUpperCase())} className="w-full bg-black/40 border border-amber-900/30 p-2 text-[10px] text-amber-400 font-hud outline-none" />
-                    </div>
-                    <div>
-                      <label className="text-[8px] text-amber-800 uppercase block mb-1">URL</label>
-                      <input type="text" value={social.url} onChange={e => updateSocialLink(idx, 'url', e.target.value)} className="w-full bg-black/40 border border-amber-900/30 p-2 text-[10px] text-amber-600 font-mono outline-none" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* IDENTITY, PROJECTS, SKILLS, EXPERIENCE tabs stay as per original implementation */}
+        
         {activeTab === 'IDENTITY' && (
           <div className="space-y-8 max-w-2xl">
             <div>
@@ -184,6 +215,122 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                 </div>
               </div>
             ))}
+          </div>
+        )}
+
+        {activeTab === 'EXPERIENCE' && (
+          <div className="space-y-12">
+            <button onClick={addExperience} className="w-full py-4 border border-amber-500/50 border-dashed text-amber-500 font-hud text-xs hover:bg-amber-500/10 transition-colors mb-6 uppercase tracking-widest">[+] ARCHIVE_NEW_CAREER_LOG</button>
+            {experience.map(exp => (
+              <div key={exp.id} className="relative p-6 border border-amber-900/40 bg-black/40 group mb-6">
+                <button onClick={() => deleteExperience(exp.id)} className="absolute top-2 right-2 p-1 text-amber-900 hover:text-rose-500 transition-colors font-hud text-[10px] uppercase tracking-tighter">[DELETE_LOG]</button>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-[9px] text-amber-700 uppercase block mb-1 font-hud tracking-widest">Role_Title</label>
+                      <input type="text" value={exp.role} onChange={(e) => updateExperience(exp.id, 'role', e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-2 text-xs text-amber-200 font-hud focus:border-amber-500 outline-none uppercase" />
+                    </div>
+                    <div>
+                      <label className="text-[9px] text-amber-700 uppercase block mb-1 font-hud tracking-widest">HQ_Company</label>
+                      <input type="text" value={exp.company} onChange={(e) => updateExperience(exp.id, 'company', e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-2 text-xs text-amber-500 font-hud focus:border-amber-500 outline-none uppercase" />
+                    </div>
+                    <div>
+                      <label className="text-[9px] text-amber-700 uppercase block mb-1 font-hud tracking-widest">Time_Period</label>
+                      <input type="text" value={exp.period} onChange={(e) => updateExperience(exp.id, 'period', e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-2 text-xs text-amber-400 font-hud focus:border-amber-500 outline-none uppercase" />
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-[9px] text-amber-700 uppercase block mb-1 font-hud tracking-widest">Briefing_Summary</label>
+                      <textarea value={exp.description} onChange={(e) => updateExperience(exp.id, 'description', e.target.value)} className="w-full h-24 bg-black/60 border border-amber-900/50 p-2 text-xs text-cyan-100 font-mono focus:border-amber-500 outline-none resize-none" />
+                    </div>
+                    <div>
+                      <div className="flex justify-between items-center mb-1">
+                        <label className="text-[9px] text-amber-700 uppercase font-hud tracking-widest">Milestones</label>
+                        <button onClick={() => addAchievement(exp.id)} className="text-[8px] text-amber-500 hover:text-amber-300 font-hud tracking-widest">[ADD_ENTRY]</button>
+                      </div>
+                      <div className="space-y-2">
+                        {exp.achievements.map((ach, idx) => (
+                          <div key={idx} className="flex gap-2">
+                            <input type="text" value={ach} onChange={(e) => updateAchievement(exp.id, idx, e.target.value)} className="flex-1 bg-black/40 border border-amber-900/30 p-1 text-[10px] text-amber-300 font-mono outline-none" />
+                            <button onClick={() => deleteAchievement(exp.id, idx)} className="text-rose-500 text-[10px] px-2 hover:bg-rose-500/10 transition-colors">X</button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {activeTab === 'SKILLS' && (
+          <div className="space-y-6">
+            <button onClick={addSkill} className="w-full py-4 border border-amber-500/50 border-dashed text-amber-500 font-hud text-xs hover:bg-amber-500/10 transition-colors uppercase tracking-widest">[+] INTEGRATE_NEW_SKILL_MODULE</button>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {skills.map((s, idx) => (
+                <div key={idx} className="p-4 border border-amber-900/20 bg-amber-950/5 flex flex-col gap-4 relative group">
+                  <button onClick={() => deleteSkill(idx)} className="absolute top-2 right-2 text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity font-hud text-[8px] uppercase">[PURGE]</button>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="text-[9px] text-amber-700 uppercase block mb-1 font-hud tracking-widest">Module_Name</label>
+                      <input type="text" value={s.name} onChange={(e) => updateSkill(idx, 'name', e.target.value.toUpperCase())} className="w-full bg-black/60 border border-amber-900/50 p-2 text-xs text-amber-400 font-hud uppercase outline-none" />
+                    </div>
+                    <div>
+                      <label className="text-[9px] text-amber-700 uppercase block mb-1 font-hud tracking-widest">Efficiency ({s.level}%)</label>
+                      <input type="range" min="0" max="100" value={s.level} onChange={(e) => updateSkill(idx, 'level', parseInt(e.target.value))} className="w-full accent-amber-500" />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-[9px] text-amber-700 uppercase block mb-1 font-hud tracking-widest">Tactical_Details</label>
+                    <textarea value={s.details} onChange={(e) => updateSkill(idx, 'details', e.target.value)} className="w-full h-16 bg-black/60 border border-amber-900/50 p-2 text-[10px] text-cyan-200 font-mono resize-none outline-none focus:border-amber-500" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'CONTACT' && (
+          <div className="space-y-10 max-w-3xl">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="text-[10px] text-amber-700 uppercase font-hud block mb-2 tracking-widest">Email_Target</label>
+                <input type="email" value={contactData.email} onChange={e => updateContactField('email', e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-3 text-amber-200 font-mono outline-none focus:border-amber-500" />
+              </div>
+              <div>
+                <label className="text-[10px] text-amber-700 uppercase font-hud block mb-2 tracking-widest">Phone_Uplink</label>
+                <input type="text" value={contactData.phone} onChange={e => updateContactField('phone', e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-3 text-amber-200 font-mono outline-none focus:border-amber-500" />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-[10px] text-amber-700 uppercase font-hud block mb-2 tracking-widest">Hire_Me_Action_URL</label>
+              <input type="text" value={contactData.hireMeUrl} onChange={e => updateContactField('hireMeUrl', e.target.value)} placeholder="mailto:you@example.com" className="w-full bg-black/60 border border-amber-900/50 p-3 text-amber-200 font-mono outline-none focus:border-amber-500" />
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex justify-between items-center border-b border-amber-900/30 pb-2">
+                <label className="text-[10px] text-amber-700 uppercase font-hud tracking-widest">Social_Uplinks</label>
+                <button onClick={addSocialLink} className="text-[9px] text-amber-500 hover:text-amber-300 font-hud tracking-widest">[+] ADD_LINK</button>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {contactData.socials.map((social, idx) => (
+                  <div key={idx} className="p-4 bg-amber-950/5 border border-amber-900/20 space-y-3 relative group">
+                    <button onClick={() => deleteSocialLink(idx)} className="absolute top-2 right-2 text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity text-[10px] font-hud">[PURGE]</button>
+                    <div>
+                      <label className="text-[8px] text-amber-800 uppercase block mb-1">Label</label>
+                      <input type="text" value={social.label} onChange={e => updateSocialLink(idx, 'label', e.target.value.toUpperCase())} className="w-full bg-black/40 border border-amber-900/30 p-2 text-[10px] text-amber-400 font-hud outline-none" />
+                    </div>
+                    <div>
+                      <label className="text-[8px] text-amber-800 uppercase block mb-1">URL</label>
+                      <input type="text" value={social.url} onChange={e => updateSocialLink(idx, 'url', e.target.value)} className="w-full bg-black/40 border border-amber-900/30 p-2 text-[10px] text-amber-600 font-mono outline-none" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         )}
       </div>
