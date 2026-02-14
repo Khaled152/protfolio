@@ -1,12 +1,14 @@
 
 import React from 'react';
-import { OPERATOR_BIO } from '../constants';
 
-const StatusPanel: React.FC = () => {
+interface StatusPanelProps {
+  operatorBio: string;
+}
+
+const StatusPanel: React.FC<StatusPanelProps> = ({ operatorBio }) => {
   return (
     <div className="flex flex-col min-h-full p-2 md:p-4">
       <div className="hud-border hud-border-tl hud-border-br p-6 md:p-10 w-full bg-slate-900/40 backdrop-blur-md relative overflow-hidden group flex-1">
-        {/* Decorative corner accent */}
         <div className="absolute top-0 right-0 w-24 h-24 border-t border-r border-cyan-500/10 pointer-events-none group-hover:border-cyan-500/30 transition-colors" />
         
         <div className="flex items-center justify-between border-b border-cyan-900/50 pb-6 mb-8">
@@ -23,16 +25,15 @@ const StatusPanel: React.FC = () => {
 
         <div className="space-y-10">
           <div className="relative">
-            {/* Background design element */}
             <div className="absolute -left-10 -top-10 text-[120px] font-hud text-cyan-500/5 select-none pointer-events-none uppercase">
               Profile
             </div>
             
             <p className="text-lg md:text-xl leading-relaxed text-cyan-100/90 font-light text-justify relative z-10">
               <span className="text-5xl font-hud text-cyan-400 mr-4 float-left mt-2 line-height-1 uppercase border-b-2 border-r-2 border-cyan-500/30 p-2">
-                {OPERATOR_BIO.charAt(0)}
+                {operatorBio.charAt(0)}
               </span>
-              {OPERATOR_BIO.slice(1)}
+              {operatorBio.slice(1)}
             </p>
           </div>
           

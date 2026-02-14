@@ -1,8 +1,11 @@
 
 import React, { useState, useEffect } from 'react';
-import { OPERATOR_NAME } from '../constants';
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  operatorName: string;
+}
+
+const Header: React.FC<HeaderProps> = ({ operatorName }) => {
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
@@ -19,7 +22,7 @@ const Header: React.FC = () => {
           </div>
         </div>
         <div>
-          <h1 className="text-xl font-hud font-bold tracking-[0.2em] text-cyan-400 uppercase">{OPERATOR_NAME}</h1>
+          <h1 className="text-xl font-hud font-bold tracking-[0.2em] text-cyan-400 uppercase">{operatorName}</h1>
           <div className="text-[10px] text-cyan-500/70 flex gap-4 font-hud">
             <span className="flex items-center gap-1">
               <span className="w-1 h-1 bg-emerald-500 rounded-full" />

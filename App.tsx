@@ -1,7 +1,13 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { NavSection, Project, Experience, Skill } from './types';
-import { PROJECTS as INITIAL_PROJECTS, EXPERIENCE as INITIAL_EXPERIENCE, SKILLS as INITIAL_SKILLS } from './constants';
+import { 
+  PROJECTS as INITIAL_PROJECTS, 
+  EXPERIENCE as INITIAL_EXPERIENCE, 
+  SKILLS as INITIAL_SKILLS,
+  OPERATOR_NAME as INITIAL_NAME,
+  OPERATOR_BIO as INITIAL_BIO
+} from './constants';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import StatusPanel from './components/StatusPanel';
@@ -18,24 +24,28 @@ const App: React.FC = () => {
   const [clickCount, setClickCount] = useState(0);
   const [showOverrideNotice, setShowOverrideNotice] = useState(false);
   
-  // Lifted States for Data Control
+  // Dynamic Portfolio State
+  const [operatorName, setOperatorName] = useState(INITIAL_NAME);
+  const [operatorBio, setOperatorBio] = useState(INITIAL_BIO);
   const [projects, setProjects] = useState<Project[]>(INITIAL_PROJECTS);
   const [experience, setExperience] = useState<Experience[]>(INITIAL_EXPERIENCE);
   const [skills, setSkills] = useState<Skill[]>(INITIAL_SKILLS);
+  const [contactData, setContactData] = useState({
+    email: 'OPERATOR@NEXUS-CORP.DEV',
+    phone: '+1 (555) 010-0242',
+    links: ['LINKEDIN', 'GITHUB', 'X-TWITTER']
+  });
 
-  // Check for special URL access link: ?auth=override
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('auth') === 'override') {
       setIsAdminUnlocked(true);
       setActiveSection(NavSection.ADMIN);
       setShowOverrideNotice(true);
-      // Remove the notification after 3 seconds
       setTimeout(() => setShowOverrideNotice(false), 3000);
     }
   }, []);
 
-  // Secret Keyboard Shortcut: Shift + Alt + A
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (e.shiftKey && e.altKey && e.key.toLowerCase() === 'a') {
       setIsAdminUnlocked(prev => !prev);
@@ -44,9 +54,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
-    const timer = setTimeout(() => {
-      setBootSequence(false);
-    }, 1200);
+    const timer = setTimeout(() => setBootSequence(false), 1200);
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
       clearTimeout(timer);
@@ -62,7 +70,6 @@ const App: React.FC = () => {
       }
       return next;
     });
-    // Reset click count after 2 seconds of inactivity
     setTimeout(() => setClickCount(0), 2000);
   };
 
@@ -85,30 +92,26 @@ const App: React.FC = () => {
         </div>
       )}
       
-      <Header />
+      <Header operatorName={operatorName} />
       
       <div className="flex-1 flex gap-4 overflow-hidden">
-        <Sidebar 
-          activeSection={activeSection} 
-          onNavigate={setActiveSection} 
-          isAdminUnlocked={isAdminUnlocked}
-        />
+        <Sidebar activeSection={activeSection} onNavigate={setActiveSection} isAdminUnlocked={isAdminUnlocked} />
         
         <main className="flex-1 flex flex-col overflow-hidden">
           <div className="flex-1 overflow-y-auto pr-2 custom-scroll pb-4">
-            {activeSection === NavSection.STATUS && <StatusPanel />}
+            {activeSection === NavSection.STATUS && <StatusPanel operatorBio={operatorBio} />}
             {activeSection === NavSection.SKILLS && <SkillsPanel skills={skills} />}
             {activeSection === NavSection.EXPERIENCE && <ExperiencePanel experience={experience} />}
             {activeSection === NavSection.PROJECTS && <ProjectPanel projects={projects} />}
-            {activeSection === NavSection.CONTACT && <ContactPanel />}
+            {activeSection === NavSection.CONTACT && <ContactPanel contactData={contactData} />}
             {isAdminUnlocked && activeSection === NavSection.ADMIN && (
               <AdminPanel 
-                projects={projects} 
-                setProjects={setProjects}
-                skills={skills}
-                setSkills={setSkills}
-                experience={experience}
-                setExperience={setExperience}
+                projects={projects} setProjects={setProjects}
+                skills={skills} setSkills={setSkills}
+                experience={experience} setExperience={setExperience}
+                operatorName={operatorName} setOperatorName={setOperatorName}
+                operatorBio={operatorBio} setOperatorBio={setOperatorBio}
+                contactData={contactData} setContactData={setContactData}
               />
             )}
           </div>
@@ -117,12 +120,7 @@ const App: React.FC = () => {
 
       <footer className="h-6 flex justify-between items-center text-[10px] uppercase opacity-50 px-2 border-t border-cyan-900/30">
         <div className="flex gap-4">
-          <span 
-            onClick={handleSecretTrigger}
-            className="cursor-help hover:opacity-100 transition-opacity select-none"
-          >
-            ENCRYPTED_ID: J-D-9901-X
-          </span>
+          <span onClick={handleSecretTrigger} className="cursor-help hover:opacity-100 transition-opacity select-none">ENCRYPTED_ID: J-D-9901-X</span>
           <span className={isAdminUnlocked ? "text-amber-500 font-bold animate-pulse" : ""}>
             {isAdminUnlocked ? "ROOT_ACCESS_ENABLED" : "SESSION: ENCRYPTED"}
           </span>
