@@ -71,6 +71,7 @@ const App: React.FC = () => {
   }, [appTitle]);
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    // Hidden shortcut: Shift + Alt + S
     if (e.shiftKey && e.altKey && e.key.toLowerCase() === 's') {
       setIsAdminUnlocked(prev => !prev);
     }
@@ -114,8 +115,16 @@ const App: React.FC = () => {
         </main>
       </div>
 
-      <footer className="py-4 border-t border-slate-200 dark:border-slate-800 text-center text-xs text-slate-400">
-        © {new Date().getFullYear()} {operatorName} Portfolio. Built with React & Tailwind.
+      <footer className="py-6 border-t border-slate-200 dark:border-slate-800 flex flex-col items-center gap-2">
+        <p className="text-xs text-slate-400">
+          © {new Date().getFullYear()} {operatorName} Portfolio. Built with React & Tailwind.
+        </p>
+        <button 
+          onClick={() => setIsAdminUnlocked(!isAdminUnlocked)}
+          className="text-[10px] text-slate-300 dark:text-slate-700 hover:text-blue-500 transition-colors uppercase tracking-widest font-bold"
+        >
+          {isAdminUnlocked ? "[ Close Settings ]" : "[ Admin Access ]"}
+        </button>
       </footer>
     </div>
   );

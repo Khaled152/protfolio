@@ -45,7 +45,6 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'IDENTITY' | 'PROJECTS' | 'SKILLS' | 'EXPERIENCE' | 'CONTACT'>('IDENTITY');
 
-  // Input styling
   const inputClass = "w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all";
   const labelClass = "block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2";
 
@@ -57,11 +56,11 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
   };
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden flex flex-col h-full animate-in fade-in duration-500">
+    <div className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden flex flex-col h-full animate-in fade-in duration-500 mb-8">
       <div className="p-6 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
         <div>
           <h2 className="text-xl font-bold text-slate-900 dark:text-white">Portfolio Settings</h2>
-          <p className="text-xs text-slate-500 mt-1">Manage your identity and content</p>
+          <p className="text-xs text-slate-500 mt-1">Full control over your professional identity</p>
         </div>
         <button onClick={handleCommit} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg transition-all active:scale-95">
           Save Changes
@@ -73,7 +72,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
           <button 
             key={tab} 
             onClick={() => setActiveTab(tab)} 
-            className={`px-8 py-4 text-xs font-bold uppercase tracking-widest transition-all border-b-2 ${activeTab === tab ? 'border-blue-500 text-blue-600 bg-white dark:bg-slate-800' : 'border-transparent text-slate-400 hover:text-slate-600'}`}
+            className={`px-8 py-4 text-xs font-bold uppercase tracking-widest transition-all border-b-2 whitespace-nowrap ${activeTab === tab ? 'border-blue-500 text-blue-600 bg-white dark:bg-slate-800' : 'border-transparent text-slate-400 hover:text-slate-600'}`}
           >
             {tab}
           </button>
@@ -83,7 +82,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
       <div className="flex-1 p-8 overflow-y-auto custom-scroll">
         {activeTab === 'IDENTITY' && (
           <div className="space-y-8 max-w-2xl">
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className={labelClass}>App Title</label>
                 <input type="text" value={appTitle} onChange={e => setAppTitle(e.target.value)} className={inputClass} />
@@ -98,7 +97,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
               <textarea value={operatorBio} onChange={e => setOperatorBio(e.target.value)} className={`${inputClass} h-40 resize-none`} />
             </div>
             <div>
-              <label className={labelClass}>Status Tags</label>
+              <label className={labelClass}>Profile Tags</label>
               <div className="flex flex-wrap gap-2 p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800">
                 {tacticalTags.map((tag, idx) => (
                   <div key={idx} className="flex items-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-1.5 rounded-lg shadow-sm">
@@ -110,19 +109,14 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                         next[idx] = e.target.value;
                         setTacticalTags(next);
                       }}
-                      className="bg-transparent border-none text-xs font-semibold outline-none w-24" 
+                      className="bg-transparent border-none text-xs font-semibold outline-none w-32" 
                     />
-                    <button onClick={() => setTacticalTags(tacticalTags.filter((_, i) => i !== idx))} className="text-red-500 hover:text-red-700">
+                    <button onClick={() => setTacticalTags(tacticalTags.filter((_, i) => i !== idx))} className="text-red-500 hover:text-red-700 transition-colors">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                     </button>
                   </div>
                 ))}
-                <button 
-                  onClick={() => setTacticalTags([...tacticalTags, 'New Tag'])} 
-                  className="px-4 py-1.5 border border-dashed border-blue-500 text-blue-600 rounded-lg text-xs font-bold hover:bg-blue-50 transition-colors"
-                >
-                  + Add Tag
-                </button>
+                <button onClick={() => setTacticalTags([...tacticalTags, 'New Focus'])} className="px-4 py-1.5 border border-dashed border-blue-500 text-blue-600 rounded-lg text-xs font-bold hover:bg-blue-50 transition-colors">+ Add Tag</button>
               </div>
             </div>
           </div>
@@ -138,7 +132,9 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                 description: '', 
                 technologies: [], 
                 status: 'DEVELOPMENT', 
-                metrics: { perf: 80, security: 80, reliability: 80 } 
+                metrics: { perf: 80, security: 80, reliability: 80 },
+                links: { live: '', github: '' },
+                imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800'
               }, ...projects])} 
               className="w-full py-4 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl text-slate-400 font-bold hover:border-blue-500 hover:text-blue-500 transition-all"
             >
@@ -151,25 +147,19 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                 </button>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-4">
-                    <div>
-                      <label className={labelClass}>Project Title</label>
-                      <input type="text" value={p.title} onChange={e => {
-                        setProjects(projects.map(item => item.id === p.id ? { ...item, title: e.target.value } : item));
-                      }} className={inputClass} />
-                    </div>
-                    <div>
-                      <label className={labelClass}>Thumbnail URL</label>
-                      <input type="text" value={p.imageUrl} onChange={e => {
-                        setProjects(projects.map(item => item.id === p.id ? { ...item, imageUrl: e.target.value } : item));
-                      }} className={inputClass} />
+                    <div><label className={labelClass}>Title</label><input type="text" value={p.title} onChange={e => setProjects(projects.map(i => i.id === p.id ? { ...i, title: e.target.value } : i))} className={inputClass} /></div>
+                    <div><label className={labelClass}>Category</label><input type="text" value={p.category} onChange={e => setProjects(projects.map(i => i.id === p.id ? { ...i, category: e.target.value } : i))} className={inputClass} /></div>
+                    <div><label className={labelClass}>Thumbnail URL</label><input type="text" value={p.imageUrl} onChange={e => setProjects(projects.map(i => i.id === p.id ? { ...i, imageUrl: e.target.value } : i))} className={inputClass} /></div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div><label className={labelClass}>Live Link</label><input type="text" value={p.links?.live} onChange={e => setProjects(projects.map(i => i.id === p.id ? { ...i, links: { ...i.links, live: e.target.value } } : i))} className={inputClass} /></div>
+                      <div><label className={labelClass}>GitHub</label><input type="text" value={p.links?.github} onChange={e => setProjects(projects.map(i => i.id === p.id ? { ...i, links: { ...i.links, github: e.target.value } } : i))} className={inputClass} /></div>
                     </div>
                   </div>
                   <div className="space-y-4">
+                    <div><label className={labelClass}>Description</label><textarea value={p.description} onChange={e => setProjects(projects.map(i => i.id === p.id ? { ...i, description: e.target.value } : i))} className={`${inputClass} h-32`} /></div>
                     <div>
-                      <label className={labelClass}>Description</label>
-                      <textarea value={p.description} onChange={e => {
-                        setProjects(projects.map(item => item.id === p.id ? { ...item, description: e.target.value } : item));
-                      }} className={`${inputClass} h-32`} />
+                      <label className={labelClass}>Technologies (comma separated)</label>
+                      <input type="text" value={p.technologies.join(', ')} onChange={e => setProjects(projects.map(i => i.id === p.id ? { ...i, technologies: e.target.value.split(',').map(s => s.trim()).filter(Boolean) } : i))} className={inputClass} />
                     </div>
                   </div>
                 </div>
@@ -178,48 +168,92 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
           </div>
         )}
 
+        {activeTab === 'SKILLS' && (
+          <div className="space-y-6">
+            <button onClick={() => setSkills([{ name: 'New Skill', level: 80, color: '#3b82f6', details: '' }, ...skills])} className="w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl text-slate-400 font-bold hover:border-blue-500 hover:text-blue-500 transition-all">+ Add Skill Module</button>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {skills.map((s, idx) => (
+                <div key={idx} className="p-6 bg-slate-50 dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 relative space-y-4">
+                  <button onClick={() => setSkills(skills.filter((_, i) => i !== idx))} className="absolute top-4 right-4 text-red-500 hover:text-red-700 transition-colors"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div><label className={labelClass}>Skill Name</label><input type="text" value={s.name} onChange={e => setSkills(skills.map((item, i) => i === idx ? { ...item, name: e.target.value } : item))} className={inputClass} /></div>
+                    <div><label className={labelClass}>Level ({s.level}%)</label><input type="range" min="0" max="100" value={s.level} onChange={e => setSkills(skills.map((item, i) => i === idx ? { ...item, level: parseInt(e.target.value) } : item))} className="w-full accent-blue-600 mt-3" /></div>
+                  </div>
+                  <div><label className={labelClass}>Short Details</label><input type="text" value={s.details} onChange={e => setSkills(skills.map((item, i) => i === idx ? { ...item, details: e.target.value } : item))} className={inputClass} /></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'EXPERIENCE' && (
+          <div className="space-y-8">
+            <button onClick={() => setExperience([{ id: `E-${Date.now()}`, role: 'Software Engineer', company: 'Company Name', period: '2024 - Present', description: 'Briefly describe your role here...', achievements: ['Accomplishment 1', 'Accomplishment 2'] }, ...experience])} className="w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl text-slate-400 font-bold hover:border-blue-500 hover:text-blue-500 transition-all">+ Add Job History</button>
+            {experience.map(exp => (
+              <div key={exp.id} className="p-8 bg-slate-50 dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 relative space-y-6">
+                <button onClick={() => setExperience(experience.filter(e => e.id !== exp.id))} className="absolute top-4 right-4 text-red-500 hover:text-red-700 transition-colors"><svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div><label className={labelClass}>Role</label><input type="text" value={exp.role} onChange={e => setExperience(experience.map(i => i.id === exp.id ? { ...i, role: e.target.value } : i))} className={inputClass} /></div>
+                  <div><label className={labelClass}>Company</label><input type="text" value={exp.company} onChange={e => setExperience(experience.map(i => i.id === exp.id ? { ...i, company: e.target.value } : i))} className={inputClass} /></div>
+                  <div><label className={labelClass}>Period</label><input type="text" value={exp.period} onChange={e => setExperience(experience.map(i => i.id === exp.id ? { ...i, period: e.target.value } : i))} className={inputClass} /></div>
+                </div>
+                <div><label className={labelClass}>Role Summary</label><textarea value={exp.description} onChange={e => setExperience(experience.map(i => i.id === exp.id ? { ...i, description: e.target.value } : i))} className={`${inputClass} h-24`} /></div>
+                <div>
+                    <label className={labelClass}>Achievements</label>
+                    <div className="space-y-3">
+                        {exp.achievements.map((ach, idx) => (
+                            <div key={idx} className="flex gap-2">
+                                <input type="text" value={ach} onChange={e => {
+                                    const nextAch = [...exp.achievements];
+                                    nextAch[idx] = e.target.value;
+                                    setExperience(experience.map(i => i.id === exp.id ? { ...i, achievements: nextAch } : i));
+                                }} className={inputClass} />
+                                <button onClick={() => {
+                                    const nextAch = exp.achievements.filter((_, i) => i !== idx);
+                                    setExperience(experience.map(i => i.id === exp.id ? { ...i, achievements: nextAch } : i));
+                                }} className="text-red-500 px-3 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-colors"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg></button>
+                            </div>
+                        ))}
+                        <button onClick={() => {
+                            const nextAch = [...exp.achievements, 'New Achievement Entry'];
+                            setExperience(experience.map(i => i.id === exp.id ? { ...i, achievements: nextAch } : i));
+                        }} className="text-xs font-bold text-blue-600 hover:text-blue-700">+ Add Achievement</button>
+                    </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
         {activeTab === 'CONTACT' && (
           <div className="space-y-8 max-w-2xl">
-            <div className="grid grid-cols-2 gap-6">
-              <div>
-                <label className={labelClass}>Primary Email</label>
-                <input type="email" value={contactData.email} onChange={e => setContactData({ ...contactData, email: e.target.value })} className={inputClass} />
-              </div>
-              <div>
-                <label className={labelClass}>Phone Number</label>
-                <input type="text" value={contactData.phone} onChange={e => setContactData({ ...contactData, phone: e.target.value })} className={inputClass} />
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div><label className={labelClass}>Email Address</label><input type="email" value={contactData.email} onChange={e => setContactData({ ...contactData, email: e.target.value })} className={inputClass} /></div>
+              <div><label className={labelClass}>Phone Number</label><input type="text" value={contactData.phone} onChange={e => setContactData({ ...contactData, phone: e.target.value })} className={inputClass} /></div>
             </div>
-            <div>
-              <label className={labelClass}>Hire Me Button Link</label>
-              <input type="text" value={contactData.hireMeUrl} onChange={e => setContactData({ ...contactData, hireMeUrl: e.target.value })} className={inputClass} />
-            </div>
+            <div><label className={labelClass}>Hire Me Button Link (mailto: or URL)</label><input type="text" value={contactData.hireMeUrl} onChange={e => setContactData({ ...contactData, hireMeUrl: e.target.value })} className={inputClass} /></div>
             <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <label className={labelClass}>Social Links</label>
-                <button 
-                  onClick={() => setContactData({ ...contactData, socials: [...contactData.socials, { label: 'New Link', url: '#' }] })} 
-                  className="text-xs font-bold text-blue-600"
-                >
-                  + Add Link
-                </button>
-              </div>
+              <div className="flex justify-between items-center"><label className={labelClass}>Social Networks</label><button onClick={() => setContactData({ ...contactData, socials: [...contactData.socials, { label: 'New Network', url: 'https://' }] })} className="text-xs font-bold text-blue-600 hover:text-blue-700">+ Add Network</button></div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {contactData.socials.map((social, idx) => (
-                  <div key={idx} className="p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-3 relative group">
-                    <button onClick={() => setContactData({ ...contactData, socials: contactData.socials.filter((_, i) => i !== idx) })} className="absolute top-3 right-3 text-slate-300 hover:text-red-500">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-                    </button>
-                    <input type="text" value={social.label} onChange={e => {
-                      const next = [...contactData.socials];
-                      next[idx].label = e.target.value;
-                      setContactData({ ...contactData, socials: next });
-                    }} className={inputClass} placeholder="Label" />
-                    <input type="text" value={social.url} onChange={e => {
-                      const next = [...contactData.socials];
-                      next[idx].url = e.target.value;
-                      setContactData({ ...contactData, socials: next });
-                    }} className={inputClass} placeholder="URL" />
+                  <div key={idx} className="p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-3 relative">
+                    <button onClick={() => setContactData({ ...contactData, socials: contactData.socials.filter((_, i) => i !== idx) })} className="absolute top-3 right-3 text-red-500 hover:text-red-700"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg></button>
+                    <div>
+                        <label className="text-[10px] text-slate-400 font-bold mb-1 block">Label</label>
+                        <input type="text" value={social.label} onChange={e => {
+                            const next = [...contactData.socials];
+                            next[idx].label = e.target.value;
+                            setContactData({ ...contactData, socials: next });
+                        }} className={inputClass} placeholder="e.g. LinkedIn" />
+                    </div>
+                    <div>
+                        <label className="text-[10px] text-slate-400 font-bold mb-1 block">URL</label>
+                        <input type="text" value={social.url} onChange={e => {
+                            const next = [...contactData.socials];
+                            next[idx].url = e.target.value;
+                            setContactData({ ...contactData, socials: next });
+                        }} className={inputClass} placeholder="https://..." />
+                    </div>
                   </div>
                 ))}
               </div>
