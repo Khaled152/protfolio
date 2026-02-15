@@ -27,8 +27,22 @@ const App: React.FC = () => {
   // Dynamic Portfolio State
   const [appTitle, setAppTitle] = useState('Professional Portfolio');
   const [operatorName, setOperatorName] = useState(INITIAL_NAME);
+  const [operatorRole, setOperatorRole] = useState('Fullstack Engineer');
+  const [resumeUrl, setResumeUrl] = useState('#');
   const [operatorBio, setOperatorBio] = useState(INITIAL_BIO);
   const [tacticalTags, setTacticalTags] = useState<string[]>(DEFAULT_TACTICAL_TAGS);
+  
+  // Stats State
+  const [yearsExperience, setYearsExperience] = useState('8+ Years');
+  const [projectsCompleted, setProjectsCompleted] = useState('50+ Completed');
+  const [location, setLocation] = useState('San Francisco, CA');
+
+  // Footer State
+  const [copyrightYear, setCopyrightYear] = useState(new Date().getFullYear().toString());
+  const [footerOwnerName, setFooterOwnerName] = useState(INITIAL_NAME);
+  const [footerBrandName, setFooterBrandName] = useState('Portfolio');
+  const [footerText, setFooterText] = useState('Built with React & Tailwind');
+
   const [projects, setProjects] = useState<Project[]>(INITIAL_PROJECTS);
   const [experience, setExperience] = useState<Experience[]>(INITIAL_EXPERIENCE);
   const [skills, setSkills] = useState<Skill[]>(INITIAL_SKILLS);
@@ -51,8 +65,17 @@ const App: React.FC = () => {
         const parsed = JSON.parse(savedData);
         if (parsed.appTitle) setAppTitle(parsed.appTitle);
         if (parsed.operatorName) setOperatorName(parsed.operatorName);
+        if (parsed.operatorRole) setOperatorRole(parsed.operatorRole);
+        if (parsed.resumeUrl) setResumeUrl(parsed.resumeUrl);
         if (parsed.operatorBio) setOperatorBio(parsed.operatorBio);
         if (parsed.tacticalTags) setTacticalTags(parsed.tacticalTags);
+        if (parsed.yearsExperience) setYearsExperience(parsed.yearsExperience);
+        if (parsed.projectsCompleted) setProjectsCompleted(parsed.projectsCompleted);
+        if (parsed.location) setLocation(parsed.location);
+        if (parsed.copyrightYear) setCopyrightYear(parsed.copyrightYear);
+        if (parsed.footerOwnerName) setFooterOwnerName(parsed.footerOwnerName);
+        if (parsed.footerBrandName) setFooterBrandName(parsed.footerBrandName);
+        if (parsed.footerText) setFooterText(parsed.footerText);
         if (parsed.projects) setProjects(parsed.projects);
         if (parsed.experience) setExperience(parsed.experience);
         if (parsed.skills) setSkills(parsed.skills);
@@ -62,16 +85,33 @@ const App: React.FC = () => {
   }, []);
 
   const saveAllData = useCallback(() => {
-    const data = { appTitle, operatorName, operatorBio, tacticalTags, projects, experience, skills, contactData };
+    const data = { 
+      appTitle, 
+      operatorName, 
+      operatorRole, 
+      resumeUrl, 
+      operatorBio, 
+      tacticalTags, 
+      yearsExperience,
+      projectsCompleted,
+      location,
+      copyrightYear,
+      footerOwnerName,
+      footerBrandName,
+      footerText,
+      projects, 
+      experience, 
+      skills, 
+      contactData 
+    };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  }, [appTitle, operatorName, operatorBio, tacticalTags, projects, experience, skills, contactData]);
+  }, [appTitle, operatorName, operatorRole, resumeUrl, operatorBio, tacticalTags, yearsExperience, projectsCompleted, location, copyrightYear, footerOwnerName, footerBrandName, footerText, projects, experience, skills, contactData]);
 
   useEffect(() => {
     document.title = appTitle;
   }, [appTitle]);
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    // Hidden shortcut: Shift + Alt + S
     if (e.shiftKey && e.altKey && e.key.toLowerCase() === 's') {
       setIsAdminUnlocked(prev => !prev);
     }
@@ -84,7 +124,11 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-900 transition-colors">
-      <Header operatorName={operatorName} />
+      <Header 
+        operatorName={operatorName} 
+        operatorRole={operatorRole} 
+        resumeUrl={resumeUrl}
+      />
       
       <div className="flex-1 flex overflow-hidden w-full px-6 py-6 gap-6">
         <Sidebar activeSection={activeSection} onNavigate={setActiveSection} isAdminUnlocked={isAdminUnlocked} />
@@ -92,7 +136,15 @@ const App: React.FC = () => {
         <main className="flex-1 overflow-hidden">
           <div className="h-full overflow-y-auto pr-2 custom-scroll">
             <div className="w-full space-y-6 pb-6">
-              {activeSection === NavSection.STATUS && <StatusPanel operatorBio={operatorBio} tacticalTags={tacticalTags} />}
+              {activeSection === NavSection.STATUS && (
+                <StatusPanel 
+                  operatorBio={operatorBio} 
+                  tacticalTags={tacticalTags}
+                  yearsExperience={yearsExperience}
+                  projectsCompleted={projectsCompleted}
+                  location={location}
+                />
+              )}
               {activeSection === NavSection.SKILLS && <SkillsPanel skills={skills} />}
               {activeSection === NavSection.EXPERIENCE && <ExperiencePanel experience={experience} />}
               {activeSection === NavSection.PROJECTS && <ProjectPanel projects={projects} />}
@@ -103,8 +155,17 @@ const App: React.FC = () => {
                   skills={skills} setSkills={setSkills}
                   experience={experience} setExperience={setExperience}
                   operatorName={operatorName} setOperatorName={setOperatorName}
+                  operatorRole={operatorRole} setOperatorRole={setOperatorRole}
+                  resumeUrl={resumeUrl} setResumeUrl={setResumeUrl}
                   operatorBio={operatorBio} setOperatorBio={setOperatorBio}
                   tacticalTags={tacticalTags} setTacticalTags={setTacticalTags}
+                  yearsExperience={yearsExperience} setYearsExperience={setYearsExperience}
+                  projectsCompleted={projectsCompleted} setProjectsCompleted={setProjectsCompleted}
+                  location={location} setLocation={setLocation}
+                  copyrightYear={copyrightYear} setCopyrightYear={setCopyrightYear}
+                  footerOwnerName={footerOwnerName} setFooterOwnerName={setFooterOwnerName}
+                  footerBrandName={footerBrandName} setFooterBrandName={setFooterBrandName}
+                  footerText={footerText} setFooterText={setFooterText}
                   contactData={contactData} setContactData={setContactData}
                   appTitle={appTitle} setAppTitle={setAppTitle}
                   onSave={saveAllData}
@@ -115,16 +176,18 @@ const App: React.FC = () => {
         </main>
       </div>
 
-      <footer className="py-6 border-t border-slate-200 dark:border-slate-800 flex flex-col items-center gap-2">
-        <p className="text-xs text-slate-400">
-          © {new Date().getFullYear()} {operatorName} Portfolio. Built with React & Tailwind.
-        </p>
+      <footer className="py-10 border-t border-slate-200 dark:border-slate-800 flex flex-col items-center gap-2">
         <button 
           onClick={() => setIsAdminUnlocked(!isAdminUnlocked)}
-          className="text-[10px] text-slate-300 dark:text-slate-700 hover:text-blue-500 transition-colors uppercase tracking-widest font-bold"
+          className="text-xs text-slate-400 hover:text-blue-500 transition-colors cursor-default select-none group text-center px-4"
         >
-          {isAdminUnlocked ? "[ Close Settings ]" : "[ Admin Access ]"}
+          © {copyrightYear} {footerOwnerName} <span className="group-hover:text-blue-400 font-medium transition-colors">{footerBrandName}</span>. {footerText}.
         </button>
+        {isAdminUnlocked && (
+          <span className="text-[10px] text-blue-500 font-bold uppercase tracking-widest animate-pulse">
+            [ Admin Mode Active ]
+          </span>
+        )}
       </footer>
     </div>
   );

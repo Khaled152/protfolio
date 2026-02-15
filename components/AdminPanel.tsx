@@ -11,10 +11,28 @@ interface AdminPanelProps {
   setExperience: React.Dispatch<React.SetStateAction<Experience[]>>;
   operatorName: string;
   setOperatorName: (name: string) => void;
+  operatorRole: string;
+  setOperatorRole: (role: string) => void;
+  resumeUrl: string;
+  setResumeUrl: (url: string) => void;
   operatorBio: string;
   setOperatorBio: (bio: string) => void;
   tacticalTags: string[];
   setTacticalTags: React.Dispatch<React.SetStateAction<string[]>>;
+  yearsExperience: string;
+  setYearsExperience: (val: string) => void;
+  projectsCompleted: string;
+  setProjectsCompleted: (val: string) => void;
+  location: string;
+  setLocation: (val: string) => void;
+  copyrightYear: string;
+  setCopyrightYear: (val: string) => void;
+  footerOwnerName: string;
+  setFooterOwnerName: (val: string) => void;
+  footerBrandName: string;
+  setFooterBrandName: (val: string) => void;
+  footerText: string;
+  setFooterText: (val: string) => void;
   appTitle: string;
   setAppTitle: (title: string) => void;
   contactData: {
@@ -37,13 +55,22 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
   skills, setSkills, 
   experience, setExperience,
   operatorName, setOperatorName,
+  operatorRole, setOperatorRole,
+  resumeUrl, setResumeUrl,
   operatorBio, setOperatorBio,
   tacticalTags, setTacticalTags,
+  yearsExperience, setYearsExperience,
+  projectsCompleted, setProjectsCompleted,
+  location, setLocation,
+  copyrightYear, setCopyrightYear,
+  footerOwnerName, setFooterOwnerName,
+  footerBrandName, setFooterBrandName,
+  footerText, setFooterText,
   appTitle, setAppTitle,
   contactData, setContactData,
   onSave
 }) => {
-  const [activeTab, setActiveTab] = useState<'IDENTITY' | 'PROJECTS' | 'SKILLS' | 'EXPERIENCE' | 'CONTACT'>('IDENTITY');
+  const [activeTab, setActiveTab] = useState<'IDENTITY' | 'PROJECTS' | 'SKILLS' | 'EXPERIENCE' | 'CONTACT' | 'FOOTER'>('IDENTITY');
 
   const inputClass = "w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all";
   const labelClass = "block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2";
@@ -68,7 +95,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
       </div>
 
       <div className="flex border-b border-slate-100 dark:border-slate-700 overflow-x-auto bg-slate-50 dark:bg-slate-900/50">
-        {(['IDENTITY', 'PROJECTS', 'SKILLS', 'EXPERIENCE', 'CONTACT'] as const).map(tab => (
+        {(['IDENTITY', 'PROJECTS', 'SKILLS', 'EXPERIENCE', 'CONTACT', 'FOOTER'] as const).map(tab => (
           <button 
             key={tab} 
             onClick={() => setActiveTab(tab)} 
@@ -81,7 +108,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
 
       <div className="flex-1 p-8 overflow-y-auto custom-scroll">
         {activeTab === 'IDENTITY' && (
-          <div className="space-y-8 max-w-2xl">
+          <div className="space-y-8 max-w-4xl">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className={labelClass}>App Title</label>
@@ -91,7 +118,34 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                 <label className={labelClass}>Full Name</label>
                 <input type="text" value={operatorName} onChange={e => setOperatorName(e.target.value)} className={inputClass} />
               </div>
+              <div>
+                <label className={labelClass}>Professional Role</label>
+                <input type="text" value={operatorRole} onChange={e => setOperatorRole(e.target.value)} className={inputClass} placeholder="e.g. Senior Fullstack Engineer" />
+              </div>
+              <div>
+                <label className={labelClass}>Resume URL</label>
+                <input type="text" value={resumeUrl} onChange={e => setResumeUrl(e.target.value)} className={inputClass} placeholder="Link to PDF or cloud file" />
+              </div>
             </div>
+
+            <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-100 dark:border-slate-800">
+               <h3 className={labelClass + " text-blue-500 mb-4"}>Hero Stats</h3>
+               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                  <label className={labelClass}>Experience Stat</label>
+                  <input type="text" value={yearsExperience} onChange={e => setYearsExperience(e.target.value)} className={inputClass} placeholder="e.g. 8+ Years" />
+                </div>
+                <div>
+                  <label className={labelClass}>Projects Stat</label>
+                  <input type="text" value={projectsCompleted} onChange={e => setProjectsCompleted(e.target.value)} className={inputClass} placeholder="e.g. 50+ Completed" />
+                </div>
+                <div>
+                  <label className={labelClass}>Location Stat</label>
+                  <input type="text" value={location} onChange={e => setLocation(e.target.value)} className={inputClass} placeholder="e.g. London, UK" />
+                </div>
+              </div>
+            </div>
+
             <div>
               <label className={labelClass}>Biography</label>
               <textarea value={operatorBio} onChange={e => setOperatorBio(e.target.value)} className={`${inputClass} h-40 resize-none`} />
@@ -119,6 +173,39 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                 <button onClick={() => setTacticalTags([...tacticalTags, 'New Focus'])} className="px-4 py-1.5 border border-dashed border-blue-500 text-blue-600 rounded-lg text-xs font-bold hover:bg-blue-50 transition-colors">+ Add Tag</button>
               </div>
             </div>
+          </div>
+        )}
+
+        {activeTab === 'FOOTER' && (
+          <div className="space-y-8 max-w-2xl">
+            <div className="bg-blue-50 dark:bg-blue-900/10 p-6 rounded-2xl border border-blue-100 dark:border-blue-800 mb-6">
+              <h3 className="text-sm font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-4">Footer Preview</h3>
+              <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700 text-center shadow-inner">
+                <p className="text-xs text-slate-500">
+                  © {copyrightYear} {footerOwnerName} <span className="text-blue-500 font-medium">{footerBrandName}</span>. {footerText}.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className={labelClass}>Copyright Year</label>
+                <input type="text" value={copyrightYear} onChange={e => setCopyrightYear(e.target.value)} className={inputClass} placeholder="e.g. 2026" />
+              </div>
+              <div>
+                <label className={labelClass}>Footer Name</label>
+                <input type="text" value={footerOwnerName} onChange={e => setFooterOwnerName(e.target.value)} className={inputClass} placeholder="e.g. JONATHAN DOE" />
+              </div>
+              <div>
+                <label className={labelClass}>Brand Label</label>
+                <input type="text" value={footerBrandName} onChange={e => setFooterBrandName(e.target.value)} className={inputClass} placeholder="e.g. Portfolio" />
+              </div>
+              <div>
+                <label className={labelClass}>Footer Tagline</label>
+                <input type="text" value={footerText} onChange={e => setFooterText(e.target.value)} className={inputClass} placeholder="e.g. Built with React & Tailwind" />
+              </div>
+            </div>
+            <p className="mt-2 text-[10px] text-slate-400 italic">Edit the specific segments of the footer text above. Your main name in the header remains unchanged.</p>
           </div>
         )}
 
@@ -150,17 +237,9 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                     <div><label className={labelClass}>Title</label><input type="text" value={p.title} onChange={e => setProjects(projects.map(i => i.id === p.id ? { ...i, title: e.target.value } : i))} className={inputClass} /></div>
                     <div><label className={labelClass}>Category</label><input type="text" value={p.category} onChange={e => setProjects(projects.map(i => i.id === p.id ? { ...i, category: e.target.value } : i))} className={inputClass} /></div>
                     <div><label className={labelClass}>Thumbnail URL</label><input type="text" value={p.imageUrl} onChange={e => setProjects(projects.map(i => i.id === p.id ? { ...i, imageUrl: e.target.value } : i))} className={inputClass} /></div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div><label className={labelClass}>Live Link</label><input type="text" value={p.links?.live} onChange={e => setProjects(projects.map(i => i.id === p.id ? { ...i, links: { ...i.links, live: e.target.value } } : i))} className={inputClass} /></div>
-                      <div><label className={labelClass}>GitHub</label><input type="text" value={p.links?.github} onChange={e => setProjects(projects.map(i => i.id === p.id ? { ...i, links: { ...i.links, github: e.target.value } } : i))} className={inputClass} /></div>
-                    </div>
                   </div>
                   <div className="space-y-4">
                     <div><label className={labelClass}>Description</label><textarea value={p.description} onChange={e => setProjects(projects.map(i => i.id === p.id ? { ...i, description: e.target.value } : i))} className={`${inputClass} h-32`} /></div>
-                    <div>
-                      <label className={labelClass}>Technologies (comma separated)</label>
-                      <input type="text" value={p.technologies.join(', ')} onChange={e => setProjects(projects.map(i => i.id === p.id ? { ...i, technologies: e.target.value.split(',').map(s => s.trim()).filter(Boolean) } : i))} className={inputClass} />
-                    </div>
                   </div>
                 </div>
               </div>
@@ -188,7 +267,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
 
         {activeTab === 'EXPERIENCE' && (
           <div className="space-y-8">
-            <button onClick={() => setExperience([{ id: `E-${Date.now()}`, role: 'Software Engineer', company: 'Company Name', period: '2024 - Present', description: 'Briefly describe your role here...', achievements: ['Accomplishment 1', 'Accomplishment 2'] }, ...experience])} className="w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl text-slate-400 font-bold hover:border-blue-500 hover:text-blue-500 transition-all">+ Add Job History</button>
+            <button onClick={() => setExperience([{ id: `E-${Date.now()}`, role: 'New Role', company: 'Company', period: '20XX - Present', description: '', achievements: [] }, ...experience])} className="w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl text-slate-400 font-bold hover:border-blue-500 hover:text-blue-500 transition-all">+ Add Job History</button>
             {experience.map(exp => (
               <div key={exp.id} className="p-8 bg-slate-50 dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 relative space-y-6">
                 <button onClick={() => setExperience(experience.filter(e => e.id !== exp.id))} className="absolute top-4 right-4 text-red-500 hover:text-red-700 transition-colors"><svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
@@ -197,7 +276,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                   <div><label className={labelClass}>Company</label><input type="text" value={exp.company} onChange={e => setExperience(experience.map(i => i.id === exp.id ? { ...i, company: e.target.value } : i))} className={inputClass} /></div>
                   <div><label className={labelClass}>Period</label><input type="text" value={exp.period} onChange={e => setExperience(experience.map(i => i.id === exp.id ? { ...i, period: e.target.value } : i))} className={inputClass} /></div>
                 </div>
-                <div><label className={labelClass}>Role Summary</label><textarea value={exp.description} onChange={e => setExperience(experience.map(i => i.id === exp.id ? { ...i, description: e.target.value } : i))} className={`${inputClass} h-24`} /></div>
+                <div><label className={labelClass}>Description</label><textarea value={exp.description} onChange={e => setExperience(experience.map(i => i.id === exp.id ? { ...i, description: e.target.value } : i))} className={`${inputClass} h-24`} /></div>
                 <div>
                     <label className={labelClass}>Achievements</label>
                     <div className="space-y-3">
@@ -215,7 +294,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                             </div>
                         ))}
                         <button onClick={() => {
-                            const nextAch = [...exp.achievements, 'New Achievement Entry'];
+                            const nextAch = [...exp.achievements, 'New Achievement'];
                             setExperience(experience.map(i => i.id === exp.id ? { ...i, achievements: nextAch } : i));
                         }} className="text-xs font-bold text-blue-600 hover:text-blue-700">+ Add Achievement</button>
                     </div>
@@ -231,29 +310,15 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
               <div><label className={labelClass}>Email Address</label><input type="email" value={contactData.email} onChange={e => setContactData({ ...contactData, email: e.target.value })} className={inputClass} /></div>
               <div><label className={labelClass}>Phone Number</label><input type="text" value={contactData.phone} onChange={e => setContactData({ ...contactData, phone: e.target.value })} className={inputClass} /></div>
             </div>
-            <div><label className={labelClass}>Hire Me Button Link (mailto: or URL)</label><input type="text" value={contactData.hireMeUrl} onChange={e => setContactData({ ...contactData, hireMeUrl: e.target.value })} className={inputClass} /></div>
+            <div><label className={labelClass}>Hire Me Button Link</label><input type="text" value={contactData.hireMeUrl} onChange={e => setContactData({ ...contactData, hireMeUrl: e.target.value })} className={inputClass} /></div>
             <div className="space-y-4">
-              <div className="flex justify-between items-center"><label className={labelClass}>Social Networks</label><button onClick={() => setContactData({ ...contactData, socials: [...contactData.socials, { label: 'New Network', url: 'https://' }] })} className="text-xs font-bold text-blue-600 hover:text-blue-700">+ Add Network</button></div>
+              <div className="flex justify-between items-center"><label className={labelClass}>Social Networks</label><button onClick={() => setContactData({ ...contactData, socials: [...contactData.socials, { label: 'New', url: 'https://' }] })} className="text-xs font-bold text-blue-600 hover:text-blue-700">+ Add Network</button></div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {contactData.socials.map((social, idx) => (
                   <div key={idx} className="p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-3 relative">
                     <button onClick={() => setContactData({ ...contactData, socials: contactData.socials.filter((_, i) => i !== idx) })} className="absolute top-3 right-3 text-red-500 hover:text-red-700"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg></button>
-                    <div>
-                        <label className="text-[10px] text-slate-400 font-bold mb-1 block">Label</label>
-                        <input type="text" value={social.label} onChange={e => {
-                            const next = [...contactData.socials];
-                            next[idx].label = e.target.value;
-                            setContactData({ ...contactData, socials: next });
-                        }} className={inputClass} placeholder="e.g. LinkedIn" />
-                    </div>
-                    <div>
-                        <label className="text-[10px] text-slate-400 font-bold mb-1 block">URL</label>
-                        <input type="text" value={social.url} onChange={e => {
-                            const next = [...contactData.socials];
-                            next[idx].url = e.target.value;
-                            setContactData({ ...contactData, socials: next });
-                        }} className={inputClass} placeholder="https://..." />
-                    </div>
+                    <div><label className="text-[10px] text-slate-400 font-bold mb-1 block">Label</label><input type="text" value={social.label} onChange={e => { const next = [...contactData.socials]; next[idx].label = e.target.value; setContactData({ ...contactData, socials: next }); }} className={inputClass} /></div>
+                    <div><label className="text-[10px] text-slate-400 font-bold mb-1 block">URL</label><input type="text" value={social.url} onChange={e => { const next = [...contactData.socials]; next[idx].url = e.target.value; setContactData({ ...contactData, socials: next }); }} className={inputClass} /></div>
                   </div>
                 ))}
               </div>

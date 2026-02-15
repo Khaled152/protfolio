@@ -4,9 +4,18 @@ import React from 'react';
 interface StatusPanelProps {
   operatorBio: string;
   tacticalTags: string[];
+  yearsExperience: string;
+  projectsCompleted: string;
+  location: string;
 }
 
-const StatusPanel: React.FC<StatusPanelProps> = ({ operatorBio, tacticalTags }) => {
+const StatusPanel: React.FC<StatusPanelProps> = ({ 
+  operatorBio, 
+  tacticalTags,
+  yearsExperience,
+  projectsCompleted,
+  location
+}) => {
   return (
     <div className="bg-white dark:bg-slate-800 rounded-3xl p-8 md:p-12 border border-slate-200 dark:border-slate-700 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="mb-10">
@@ -32,15 +41,15 @@ const StatusPanel: React.FC<StatusPanelProps> = ({ operatorBio, tacticalTags }) 
       <div className="mt-12 pt-8 border-t border-slate-100 dark:border-slate-700 grid grid-cols-2 md:grid-cols-3 gap-6">
         <div className="space-y-1">
           <p className="text-xs text-slate-400 uppercase font-bold tracking-widest">Experience</p>
-          <p className="text-lg font-semibold text-slate-900 dark:text-white">8+ Years</p>
+          <p className="text-lg font-semibold text-slate-900 dark:text-white">{yearsExperience}</p>
         </div>
         <div className="space-y-1">
           <p className="text-xs text-slate-400 uppercase font-bold tracking-widest">Projects</p>
-          <p className="text-lg font-semibold text-slate-900 dark:text-white">50+ Completed</p>
+          <p className="text-lg font-semibold text-slate-900 dark:text-white">{projectsCompleted}</p>
         </div>
         <div className="space-y-1">
           <p className="text-xs text-slate-400 uppercase font-bold tracking-widest">Location</p>
-          <p className="text-lg font-semibold text-slate-900 dark:text-white">San Francisco, CA</p>
+          <p className="text-lg font-semibold text-slate-900 dark:text-white">{location}</p>
         </div>
       </div>
     </div>
