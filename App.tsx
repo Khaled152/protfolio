@@ -57,7 +57,7 @@ const App: React.FC = () => {
     ]
   });
 
-  // Persistence logic
+  // Load persistence on mount
   useEffect(() => {
     const savedData = localStorage.getItem(STORAGE_KEY);
     if (savedData) {
@@ -84,6 +84,7 @@ const App: React.FC = () => {
     }
   }, []);
 
+  // Save logic
   const saveAllData = useCallback(() => {
     const data = { 
       appTitle, 
@@ -105,7 +106,17 @@ const App: React.FC = () => {
       contactData 
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  }, [appTitle, operatorName, operatorRole, resumeUrl, operatorBio, tacticalTags, yearsExperience, projectsCompleted, location, copyrightYear, footerOwnerName, footerBrandName, footerText, projects, experience, skills, contactData]);
+  }, [
+    appTitle, operatorName, operatorRole, resumeUrl, operatorBio, tacticalTags, 
+    yearsExperience, projectsCompleted, location, copyrightYear, 
+    footerOwnerName, footerBrandName, footerText, projects, experience, 
+    skills, contactData
+  ]);
+
+  // Auto-save whenever state changes
+  useEffect(() => {
+    saveAllData();
+  }, [saveAllData]);
 
   useEffect(() => {
     document.title = appTitle;
