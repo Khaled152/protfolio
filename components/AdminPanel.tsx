@@ -45,327 +45,131 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'IDENTITY' | 'PROJECTS' | 'SKILLS' | 'EXPERIENCE' | 'CONTACT'>('IDENTITY');
 
-  // --- EXPERIENCE CRUD ---
-  const updateExperience = (id: string, field: keyof Experience, value: any) => {
-    setExperience(prev => prev.map(exp => exp.id === id ? { ...exp, [field]: value } : exp));
-  };
-
-  const updateAchievement = (expId: string, idx: number, value: string) => {
-    setExperience(prev => prev.map(exp => {
-      if (exp.id === expId) {
-        const nextAch = [...exp.achievements];
-        nextAch[idx] = value;
-        return { ...exp, achievements: nextAch };
-      }
-      return exp;
-    }));
-  };
-
-  const addAchievement = (expId: string) => {
-    setExperience(prev => prev.map(exp => 
-      exp.id === expId ? { ...exp, achievements: [...exp.achievements, 'NEW_ACHIEVEMENT_LOG'] } : exp
-    ));
-  };
-
-  const deleteAchievement = (expId: string, idx: number) => {
-    setExperience(prev => prev.map(exp => 
-      exp.id === expId ? { ...exp, achievements: exp.achievements.filter((_, i) => i !== idx) } : exp
-    ));
-  };
-
-  const addExperience = () => {
-    const newId = `EXP-${Math.floor(Math.random() * 9000) + 1000}`;
-    setExperience(prev => [...prev, {
-      id: newId,
-      role: 'NEW_ROLE',
-      company: 'NEW_CORP',
-      period: '2024 - PRESENT',
-      description: 'Role mission briefing pending...',
-      achievements: ['Initial milestone recorded']
-    }]);
-  };
-
-  const deleteExperience = (id: string) => {
-    if (confirm(`PURGE CAREER LOG ${id}?`)) {
-      setExperience(prev => prev.filter(e => e.id !== id));
-    }
-  };
-
-  // --- SKILLS CRUD ---
-  const updateSkill = (idx: number, field: keyof Skill, value: any) => {
-    setSkills(prev => {
-      const next = [...prev];
-      next[idx] = { ...next[idx], [field]: value };
-      return next;
-    });
-  };
-
-  const addSkill = () => {
-    setSkills(prev => [...prev, { 
-      name: 'NEW_MODULE', 
-      level: 50, 
-      color: '#22d3ee', 
-      details: 'Module analysis pending...' 
-    }]);
-  };
-
-  const deleteSkill = (idx: number) => {
-    if (confirm("PURGE SKILL MODULE?")) {
-      setSkills(prev => prev.filter((_, i) => i !== idx));
-    }
-  };
-
-  // --- PROJECTS CRUD ---
-  const updateProject = (id: string, field: keyof Project, value: any) => {
-    setProjects(prev => prev.map(p => p.id === id ? { ...p, [field]: value } : p));
-  };
-
-  const updateProjectLinks = (id: string, type: 'live' | 'github', value: string) => {
-    setProjects(prev => prev.map(p => p.id === id ? { ...p, links: { ...p.links, [type]: value } } : p));
-  };
-
-  const addProject = () => {
-    const newId = `P-${Math.floor(Math.random() * 9000) + 1000}`;
-    setProjects(prev => [...prev, { 
-      id: newId, 
-      title: 'NEW_PROJECT', 
-      subtitle: 'SUBTITLE // TAGS',
-      category: 'UNSET', 
-      description: '', 
-      technologies: ['React'], 
-      status: 'DEVELOPMENT', 
-      links: { live: '', github: '' }, 
-      metrics: { perf: 50, security: 50, reliability: 50 } 
-    }]);
-  };
-
-  const deleteProject = (id: string) => confirm(`PURGE ${id}?`) && setProjects(prev => prev.filter(p => p.id !== id));
-
-  // --- TACTICAL TAGS CRUD ---
-  const updateTacticalTag = (idx: number, val: string) => {
-    setTacticalTags(prev => {
-      const next = [...prev];
-      next[idx] = val.toUpperCase().replace(/\s+/g, '_');
-      return next;
-    });
-  };
-  const addTacticalTag = () => setTacticalTags(prev => [...prev, 'NEW_STATUS_TAG']);
-  const deleteTacticalTag = (idx: number) => setTacticalTags(prev => prev.filter((_, i) => i !== idx));
-
-  // --- CONTACT CRUD ---
-  const updateContactField = (field: string, val: any) => setContactData(prev => ({ ...prev, [field]: val }));
-  
-  const updateSocialLink = (idx: number, field: 'label' | 'url', val: string) => {
-    setContactData(prev => {
-      const nextSocials = [...prev.socials];
-      nextSocials[idx] = { ...nextSocials[idx], [field]: val };
-      return { ...prev, socials: nextSocials };
-    });
-  };
-
-  const addSocialLink = () => {
-    setContactData(prev => ({
-      ...prev,
-      socials: [...prev.socials, { label: 'NEW_NODE', url: 'https://' }]
-    }));
-  };
-
-  const deleteSocialLink = (idx: number) => {
-    setContactData(prev => ({
-      ...prev,
-      socials: prev.socials.filter((_, i) => i !== idx)
-    }));
-  };
+  // Input styling
+  const inputClass = "w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all";
+  const labelClass = "block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2";
 
   const handleCommit = () => {
     if (onSave) {
         onSave();
-        alert("SYSTEM_OVERRIDE_SUCCESSFUL: DATA_COMMITTED_TO_PERSISTENT_STORAGE");
-    } else {
-        alert("ERROR: PERSISTENCE_UPLINK_FAILURE");
+        alert("Portfolio data updated successfully.");
     }
   };
 
   return (
-    <div className="flex flex-col gap-6 h-full animate-in fade-in duration-500 pb-20">
-      <div className="flex items-center gap-4 border-b border-amber-900/50 pb-4">
-        <div className="p-2 border border-amber-500/50 bg-amber-500/10 shadow-[0_0_15px_rgba(245,158,11,0.2)]">
-          <svg className="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-        </div>
+    <div className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden flex flex-col h-full animate-in fade-in duration-500">
+      <div className="p-6 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-hud text-amber-500 tracking-[0.3em] uppercase">System_Override_Console</h2>
-          <div className="text-[10px] text-amber-700 font-hud uppercase tracking-widest">AUTHENTICATED_ACCESS // ROOT</div>
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white">Portfolio Settings</h2>
+          <p className="text-xs text-slate-500 mt-1">Manage your identity and content</p>
         </div>
+        <button onClick={handleCommit} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg transition-all active:scale-95">
+          Save Changes
+        </button>
       </div>
 
-      <div className="flex flex-wrap gap-2 mb-4">
+      <div className="flex border-b border-slate-100 dark:border-slate-700 overflow-x-auto bg-slate-50 dark:bg-slate-900/50">
         {(['IDENTITY', 'PROJECTS', 'SKILLS', 'EXPERIENCE', 'CONTACT'] as const).map(tab => (
-          <button key={tab} onClick={() => setActiveTab(tab)} className={`px-4 py-2 border font-hud text-[10px] transition-all uppercase tracking-widest ${activeTab === tab ? 'bg-amber-500/20 border-amber-500 text-amber-400' : 'border-amber-900/30 text-amber-900 hover:border-amber-700'}`}>{tab}</button>
+          <button 
+            key={tab} 
+            onClick={() => setActiveTab(tab)} 
+            className={`px-8 py-4 text-xs font-bold uppercase tracking-widest transition-all border-b-2 ${activeTab === tab ? 'border-blue-500 text-blue-600 bg-white dark:bg-slate-800' : 'border-transparent text-slate-400 hover:text-slate-600'}`}
+          >
+            {tab}
+          </button>
         ))}
       </div>
 
-      <div className="flex-1 bg-[#050505]/95 border border-amber-900/30 p-8 custom-scroll overflow-y-auto min-h-0 backdrop-blur-sm">
-        
+      <div className="flex-1 p-8 overflow-y-auto custom-scroll">
         {activeTab === 'IDENTITY' && (
-          <div className="space-y-10 max-w-3xl">
-            <div>
-              <label className="text-[10px] text-amber-700 uppercase font-hud block mb-3 tracking-[0.3em]">Application_Title_Protocol</label>
-              <input type="text" value={appTitle} onChange={e => setAppTitle(e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-4 text-amber-200 font-mono text-sm focus:border-amber-500 outline-none uppercase tracking-widest" />
-            </div>
-            <div>
-              <label className="text-[10px] text-amber-700 uppercase font-hud block mb-3 tracking-[0.3em]">Operator_Codename</label>
-              <input type="text" value={operatorName} onChange={e => setOperatorName(e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-4 text-amber-200 font-hud focus:border-amber-500 outline-none uppercase tracking-widest" />
-            </div>
-            <div>
-              <label className="text-[10px] text-amber-700 uppercase font-hud block mb-3 tracking-[0.3em]">Operator_Biography</label>
-              <textarea value={operatorBio} onChange={e => setOperatorBio(e.target.value)} className="w-full h-48 bg-black/60 border border-amber-900/50 p-4 text-cyan-100 font-mono text-sm leading-relaxed focus:border-amber-500 outline-none resize-none" />
-            </div>
-            
-            {/* Tactical Tags Management */}
-            <div>
-              <div className="flex justify-between items-center mb-3">
-                <label className="text-[10px] text-amber-700 uppercase font-hud tracking-[0.3em]">Tactical_Status_Tags</label>
-                <button onClick={addTacticalTag} className="text-[9px] text-amber-500 hover:text-amber-300 font-hud tracking-widest px-2 py-1 border border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/10">[+] NEW_TAG</button>
+          <div className="space-y-8 max-w-2xl">
+            <div className="grid grid-cols-2 gap-6">
+              <div>
+                <label className={labelClass}>App Title</label>
+                <input type="text" value={appTitle} onChange={e => setAppTitle(e.target.value)} className={inputClass} />
               </div>
-              <div className="flex flex-wrap gap-3 p-4 bg-black/40 border border-amber-900/20">
+              <div>
+                <label className={labelClass}>Full Name</label>
+                <input type="text" value={operatorName} onChange={e => setOperatorName(e.target.value)} className={inputClass} />
+              </div>
+            </div>
+            <div>
+              <label className={labelClass}>Biography</label>
+              <textarea value={operatorBio} onChange={e => setOperatorBio(e.target.value)} className={`${inputClass} h-40 resize-none`} />
+            </div>
+            <div>
+              <label className={labelClass}>Status Tags</label>
+              <div className="flex flex-wrap gap-2 p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800">
                 {tacticalTags.map((tag, idx) => (
-                  <div key={idx} className="flex items-center gap-1 border border-amber-900/50 bg-black/60 overflow-hidden">
+                  <div key={idx} className="flex items-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-1.5 rounded-lg shadow-sm">
                     <input 
                       type="text" 
                       value={tag} 
-                      onChange={(e) => updateTacticalTag(idx, e.target.value)}
-                      className="bg-transparent border-none text-[10px] text-amber-400 font-hud p-2 focus:outline-none focus:bg-amber-500/10 w-32 uppercase" 
+                      onChange={(e) => {
+                        const next = [...tacticalTags];
+                        next[idx] = e.target.value;
+                        setTacticalTags(next);
+                      }}
+                      className="bg-transparent border-none text-xs font-semibold outline-none w-24" 
                     />
-                    <button 
-                      onClick={() => deleteTacticalTag(idx)} 
-                      className="px-2 text-rose-500 hover:bg-rose-500 hover:text-white transition-colors h-full text-[10px]"
-                    >
-                      X
+                    <button onClick={() => setTacticalTags(tacticalTags.filter((_, i) => i !== idx))} className="text-red-500 hover:text-red-700">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                     </button>
                   </div>
                 ))}
+                <button 
+                  onClick={() => setTacticalTags([...tacticalTags, 'New Tag'])} 
+                  className="px-4 py-1.5 border border-dashed border-blue-500 text-blue-600 rounded-lg text-xs font-bold hover:bg-blue-50 transition-colors"
+                >
+                  + Add Tag
+                </button>
               </div>
             </div>
           </div>
         )}
 
         {activeTab === 'PROJECTS' && (
-          <div className="space-y-12">
-            <button onClick={addProject} className="w-full py-5 border border-amber-500/50 border-dashed text-amber-500 font-hud text-[10px] hover:bg-amber-500/10 transition-all uppercase tracking-[0.3em] bg-amber-500/5">[+] DEPLOY_NEW_PROJECT_MANIFEST</button>
+          <div className="space-y-8">
+            <button 
+              onClick={() => setProjects([{ 
+                id: `P-${Date.now()}`, 
+                title: 'New Project', 
+                category: 'Web', 
+                description: '', 
+                technologies: [], 
+                status: 'DEVELOPMENT', 
+                metrics: { perf: 80, security: 80, reliability: 80 } 
+              }, ...projects])} 
+              className="w-full py-4 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl text-slate-400 font-bold hover:border-blue-500 hover:text-blue-500 transition-all"
+            >
+              + Create New Project
+            </button>
             {projects.map(p => (
-              <div key={p.id} className="relative p-8 border border-amber-900/40 bg-black/60 group mb-8">
-                <button onClick={() => deleteProject(p.id)} className="absolute top-4 right-4 p-2 text-amber-900 hover:text-rose-500 transition-colors font-hud text-[10px] uppercase tracking-tighter border border-transparent hover:border-rose-500/30 bg-black/20">[PURGE_MANIFEST]</button>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                  <div className="space-y-6">
+              <div key={p.id} className="p-6 bg-slate-50 dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 relative group">
+                <button onClick={() => setProjects(projects.filter(proj => proj.id !== p.id))} className="absolute top-4 right-4 text-slate-300 hover:text-red-500 transition-colors">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                </button>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-4">
                     <div>
-                      <label className="text-[10px] text-amber-700 uppercase block mb-2 font-hud tracking-widest">Project_Title</label>
-                      <input type="text" value={p.title} onChange={(e) => updateProject(p.id, 'title', e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-3 text-xs text-amber-200 font-hud focus:border-amber-500 outline-none uppercase" />
+                      <label className={labelClass}>Project Title</label>
+                      <input type="text" value={p.title} onChange={e => {
+                        setProjects(projects.map(item => item.id === p.id ? { ...item, title: e.target.value } : item));
+                      }} className={inputClass} />
                     </div>
                     <div>
-                      <label className="text-[10px] text-amber-700 uppercase block mb-2 font-hud tracking-widest">Subtitle // Tech Summary</label>
-                      <input type="text" value={p.subtitle || ''} onChange={(e) => updateProject(p.id, 'subtitle', e.target.value)} placeholder="e.g. REACT // TAILWIND // NODE" className="w-full bg-black/60 border border-amber-900/50 p-3 text-[10px] text-amber-500 font-hud outline-none uppercase tracking-widest" />
-                    </div>
-                    <div>
-                      <label className="text-[10px] text-amber-700 uppercase block mb-2 font-hud tracking-widest">Image_Resource_URL</label>
-                      <input type="text" value={p.imageUrl || ''} onChange={(e) => updateProject(p.id, 'imageUrl', e.target.value)} placeholder="https://..." className="w-full bg-black/60 border border-amber-900/50 p-3 text-[10px] text-amber-600 font-mono outline-none" />
-                    </div>
-                    <div>
-                      <label className="text-[10px] text-amber-700 uppercase block mb-2 font-hud tracking-widest">Manifest_Description</label>
-                      <textarea value={p.description} onChange={(e) => updateProject(p.id, 'description', e.target.value)} className="w-full h-32 bg-black/60 border border-amber-900/50 p-3 text-xs text-cyan-100 font-mono focus:border-amber-500 outline-none resize-none" />
+                      <label className={labelClass}>Thumbnail URL</label>
+                      <input type="text" value={p.imageUrl} onChange={e => {
+                        setProjects(projects.map(item => item.id === p.id ? { ...item, imageUrl: e.target.value } : item));
+                      }} className={inputClass} />
                     </div>
                   </div>
-                  <div className="space-y-8">
-                    <div className="grid grid-cols-1 gap-6">
-                      <div>
-                        <label className="text-[10px] text-amber-700 uppercase block mb-2 font-hud tracking-widest">Live_Uplink (Iframe Target)</label>
-                        <input type="text" placeholder="google.com" value={p.links?.live || ''} onChange={(e) => updateProjectLinks(p.id, 'live', e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-3 text-[10px] text-amber-500 font-mono outline-none" />
-                      </div>
-                      <div>
-                        <label className="text-[10px] text-amber-700 uppercase block mb-2 font-hud tracking-widest">Source_Repo</label>
-                        <input type="text" placeholder="github.com/..." value={p.links?.github || ''} onChange={(e) => updateProjectLinks(p.id, 'github', e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-3 text-[10px] text-amber-500 font-mono outline-none" />
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-3 gap-3">
-                      {['perf', 'security', 'reliability'].map(m => (
-                        <div key={m}>
-                          <label className="text-[9px] text-amber-700 uppercase block mb-2 font-hud tracking-tighter">{m}</label>
-                          <input type="number" min="0" max="100" value={p.metrics[m as keyof typeof p.metrics]} onChange={(e) => updateProject(p.id, 'metrics', { ...p.metrics, [m]: parseInt(e.target.value) })} className="w-full bg-black/60 border border-amber-900/50 p-2 text-[10px] text-amber-400 font-hud" />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {activeTab === 'SKILLS' && (
-          <div className="space-y-10">
-            <button onClick={addSkill} className="w-full py-5 border border-amber-500/50 border-dashed text-amber-500 font-hud text-[10px] hover:bg-amber-500/10 transition-all uppercase tracking-[0.3em] bg-amber-500/5">[+] INTEGRATE_NEW_SKILL_MODULE</button>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {skills.map((s, idx) => (
-                <div key={idx} className="p-6 border border-amber-900/20 bg-amber-950/10 flex flex-col gap-5 relative group">
-                  <button onClick={() => deleteSkill(idx)} className="absolute top-3 right-3 text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity font-hud text-[9px] uppercase tracking-widest border border-rose-500/20 px-2 bg-black/40">[PURGE]</button>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-4">
                     <div>
-                      <label className="text-[10px] text-amber-700 uppercase block mb-2 font-hud tracking-widest">Module_Name</label>
-                      <input type="text" value={s.name} onChange={(e) => updateSkill(idx, 'name', e.target.value.toUpperCase())} className="w-full bg-black/60 border border-amber-900/50 p-3 text-xs text-amber-400 font-hud uppercase outline-none" />
-                    </div>
-                    <div>
-                      <label className="text-[10px] text-amber-700 uppercase block mb-2 font-hud tracking-widest">Efficiency ({s.level}%)</label>
-                      <input type="range" min="0" max="100" value={s.level} onChange={(e) => updateSkill(idx, 'level', parseInt(e.target.value))} className="w-full h-8 accent-amber-500 bg-transparent cursor-pointer" />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="text-[10px] text-amber-700 uppercase block mb-2 font-hud tracking-widest">Tactical_Details</label>
-                    <textarea value={s.details} onChange={(e) => updateSkill(idx, 'details', e.target.value)} className="w-full h-24 bg-black/60 border border-amber-900/50 p-3 text-[10px] text-cyan-200 font-mono resize-none outline-none focus:border-amber-500" />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'EXPERIENCE' && (
-          <div className="space-y-12">
-            <button onClick={addExperience} className="w-full py-5 border border-amber-500/50 border-dashed text-amber-500 font-hud text-[10px] hover:bg-amber-500/10 transition-all uppercase tracking-[0.3em] bg-amber-500/5">[+] ARCHIVE_NEW_CAREER_LOG</button>
-            {experience.map(exp => (
-              <div key={exp.id} className="relative p-8 border border-amber-900/40 bg-black/60 group mb-8">
-                <button onClick={() => deleteExperience(exp.id)} className="absolute top-4 right-4 p-2 text-amber-900 hover:text-rose-500 transition-colors font-hud text-[10px] uppercase tracking-tighter border border-transparent hover:border-rose-500/30 bg-black/20">[DELETE_LOG]</button>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                  <div className="space-y-6">
-                    <div>
-                      <label className="text-[10px] text-amber-700 uppercase block mb-2 font-hud tracking-widest">Role_Title</label>
-                      <input type="text" value={exp.role} onChange={(e) => updateExperience(exp.id, 'role', e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-3 text-xs text-amber-200 font-hud focus:border-amber-500 outline-none uppercase" />
-                    </div>
-                    <div>
-                      <label className="text-[10px] text-amber-700 uppercase block mb-2 font-hud tracking-widest">HQ_Company</label>
-                      <input type="text" value={exp.company} onChange={(e) => updateExperience(exp.id, 'company', e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-3 text-xs text-amber-500 font-hud focus:border-amber-500 outline-none uppercase" />
-                    </div>
-                    <div>
-                      <label className="text-[10px] text-amber-700 uppercase block mb-2 font-hud tracking-widest">Time_Period</label>
-                      <input type="text" value={exp.period} onChange={(e) => updateExperience(exp.id, 'period', e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-3 text-xs text-amber-400 font-hud focus:border-amber-500 outline-none uppercase" />
-                    </div>
-                  </div>
-                  <div className="space-y-6">
-                    <div>
-                      <label className="text-[10px] text-amber-700 uppercase block mb-2 font-hud tracking-widest">Briefing_Summary</label>
-                      <textarea value={exp.description} onChange={(e) => updateExperience(exp.id, 'description', e.target.value)} className="w-full h-32 bg-black/60 border border-amber-900/50 p-3 text-xs text-cyan-100 font-mono focus:border-amber-500 outline-none resize-none" />
-                    </div>
-                    <div>
-                      <div className="flex justify-between items-center mb-2">
-                        <label className="text-[10px] text-amber-700 uppercase font-hud tracking-widest">Milestones</label>
-                        <button onClick={() => addAchievement(exp.id)} className="text-[9px] text-amber-500 hover:text-amber-300 font-hud tracking-widest px-2 py-0.5 border border-amber-500/30 hover:bg-amber-500/10">[ADD_ENTRY]</button>
-                      </div>
-                      <div className="space-y-3">
-                        {exp.achievements.map((ach, idx) => (
-                          <div key={idx} className="flex gap-2 group/ach">
-                            <input type="text" value={ach} onChange={(e) => updateAchievement(exp.id, idx, e.target.value)} className="flex-1 bg-black/40 border border-amber-900/30 p-2 text-[10px] text-amber-300 font-mono outline-none" />
-                            <button onClick={() => deleteAchievement(exp.id, idx)} className="text-rose-500 text-[10px] px-3 border border-rose-500/20 hover:bg-rose-500/10 transition-colors">X</button>
-                          </div>
-                        ))}
-                      </div>
+                      <label className={labelClass}>Description</label>
+                      <textarea value={p.description} onChange={e => {
+                        setProjects(projects.map(item => item.id === p.id ? { ...item, description: e.target.value } : item));
+                      }} className={`${inputClass} h-32`} />
                     </div>
                   </div>
                 </div>
@@ -375,60 +179,53 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
         )}
 
         {activeTab === 'CONTACT' && (
-          <div className="space-y-12 max-w-4xl">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <div className="space-y-8 max-w-2xl">
+            <div className="grid grid-cols-2 gap-6">
               <div>
-                <label className="text-[11px] text-amber-700 uppercase font-hud block mb-3 tracking-[0.2em]">Email_Target_Node</label>
-                <input type="email" value={contactData.email} onChange={e => updateContactField('email', e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-4 text-amber-200 font-mono text-sm outline-none focus:border-amber-500" />
+                <label className={labelClass}>Primary Email</label>
+                <input type="email" value={contactData.email} onChange={e => setContactData({ ...contactData, email: e.target.value })} className={inputClass} />
               </div>
               <div>
-                <label className="text-[11px] text-amber-700 uppercase font-hud block mb-3 tracking-[0.2em]">Satellite_Phone_Uplink</label>
-                <input type="text" value={contactData.phone} onChange={e => updateContactField('phone', e.target.value)} className="w-full bg-black/60 border border-amber-900/50 p-4 text-amber-200 font-mono text-sm outline-none focus:border-amber-500" />
+                <label className={labelClass}>Phone Number</label>
+                <input type="text" value={contactData.phone} onChange={e => setContactData({ ...contactData, phone: e.target.value })} className={inputClass} />
               </div>
             </div>
-
             <div>
-              <label className="text-[11px] text-amber-700 uppercase font-hud block mb-3 tracking-[0.2em]">Hire_Me_Protocol_URL</label>
-              <input type="text" value={contactData.hireMeUrl} onChange={e => updateContactField('hireMeUrl', e.target.value)} placeholder="mailto:you@example.com" className="w-full bg-black/60 border border-amber-900/50 p-4 text-amber-200 font-mono text-sm outline-none focus:border-amber-500" />
-              <div className="text-[8px] text-amber-900 mt-2 uppercase italic font-hud tracking-widest">Sets the primary action button destination</div>
+              <label className={labelClass}>Hire Me Button Link</label>
+              <input type="text" value={contactData.hireMeUrl} onChange={e => setContactData({ ...contactData, hireMeUrl: e.target.value })} className={inputClass} />
             </div>
-
-            <div className="space-y-6">
-              <div className="flex justify-between items-center border-b border-amber-900/40 pb-3">
-                <label className="text-[11px] text-amber-700 uppercase font-hud tracking-[0.3em]">Encrypted_Social_Profile_Nodes</label>
-                <button onClick={addSocialLink} className="text-[10px] text-amber-500 hover:text-amber-300 font-hud tracking-[0.2em] px-3 py-1 border border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/10">[+] NEW_CHANNEL</button>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <label className={labelClass}>Social Links</label>
+                <button 
+                  onClick={() => setContactData({ ...contactData, socials: [...contactData.socials, { label: 'New Link', url: '#' }] })} 
+                  className="text-xs font-bold text-blue-600"
+                >
+                  + Add Link
+                </button>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {contactData.socials.map((social, idx) => (
-                  <div key={idx} className="p-6 bg-amber-950/5 border border-amber-900/30 space-y-4 relative group">
-                    <button onClick={() => deleteSocialLink(idx)} className="absolute top-4 right-4 text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity text-[10px] font-hud border border-rose-500/30 px-2 bg-black/40 hover:bg-rose-500/10">[PURGE]</button>
-                    <div>
-                      <label className="text-[9px] text-amber-800 uppercase block mb-2 font-hud">Channel_Label</label>
-                      <input type="text" value={social.label} onChange={e => updateSocialLink(idx, 'label', e.target.value.toUpperCase())} className="w-full bg-black/40 border border-amber-900/30 p-3 text-[10px] text-amber-400 font-hud outline-none focus:border-amber-500" />
-                    </div>
-                    <div>
-                      <label className="text-[9px] text-amber-800 uppercase block mb-2 font-hud">Target_Access_URL</label>
-                      <input type="text" value={social.url} onChange={e => updateSocialLink(idx, 'url', e.target.value)} className="w-full bg-black/40 border border-amber-900/30 p-3 text-[10px] text-amber-600 font-mono outline-none focus:border-amber-500" />
-                    </div>
+                  <div key={idx} className="p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-3 relative group">
+                    <button onClick={() => setContactData({ ...contactData, socials: contactData.socials.filter((_, i) => i !== idx) })} className="absolute top-3 right-3 text-slate-300 hover:text-red-500">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                    <input type="text" value={social.label} onChange={e => {
+                      const next = [...contactData.socials];
+                      next[idx].label = e.target.value;
+                      setContactData({ ...contactData, socials: next });
+                    }} className={inputClass} placeholder="Label" />
+                    <input type="text" value={social.url} onChange={e => {
+                      const next = [...contactData.socials];
+                      next[idx].url = e.target.value;
+                      setContactData({ ...contactData, socials: next });
+                    }} className={inputClass} placeholder="URL" />
                   </div>
                 ))}
               </div>
             </div>
           </div>
         )}
-      </div>
-
-      <div className="fixed bottom-0 left-20 right-0 h-20 bg-[#050505] border-t border-amber-900/40 flex justify-end items-center px-10 gap-6 z-50">
-        <div className="flex flex-col items-end">
-          <div className="text-[10px] text-amber-500 font-hud uppercase animate-pulse">Root_Access_Confirmed</div>
-          <div className="text-[8px] text-amber-900 font-hud uppercase tracking-widest italic">All changes staged for persistent override</div>
-        </div>
-        <button 
-          onClick={handleCommit}
-          className="px-12 py-4 bg-amber-500 text-black font-hud text-xs hover:bg-amber-400 transition-all shadow-[0_0_25px_rgba(245,158,11,0.5)] active:scale-95 uppercase tracking-[0.4em] font-bold"
-        >
-          COMMIT_OVERRIDE
-        </button>
       </div>
     </div>
   );

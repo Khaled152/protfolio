@@ -2,48 +2,48 @@
 import { Project, Experience } from './types';
 
 export const COLORS = {
-  primary: '#22d3ee',
-  secondary: '#818cf8',
-  accent: '#f472b6',
-  warning: '#fbbf24',
-  error: '#f87171',
-  bg: '#020617',
+  primary: '#3b82f6',
+  secondary: '#6366f1',
+  accent: '#f43f5e',
+  warning: '#f59e0b',
+  error: '#ef4444',
+  bg: '#f8fafc',
 };
 
 export const OPERATOR_NAME = "JONATHAN DOE";
-export const OPERATOR_BIO = "Strategic Fullstack Engineer with a decade of experience crafting high-stakes web applications. Specialist in distributed systems, real-time data visualization, and reactive UI architecture. Committed to technical excellence and mission success.";
-export const DEFAULT_TACTICAL_TAGS = ['REMOTE_READY', 'FULL_TIME', 'CONSULTING', 'ARCHITECT', 'FRONTEND_LEAD', 'UI_ENGINEER', 'MISSION_CRITICAL'];
+export const OPERATOR_BIO = "Passionate Fullstack Engineer with over a decade of experience in building scalable web applications. Expert in modern frontend frameworks, cloud infrastructure, and user-centric design. Committed to delivering high-quality code and exceptional user experiences.";
+export const DEFAULT_TACTICAL_TAGS = ['Open to Work', 'Full Time', 'Consulting', 'System Architect', 'Frontend Lead', 'UI Engineer', 'Strategic Planner'];
 
 export const PROJECTS: Project[] = [
   {
     id: 'P-01',
-    title: 'AETHER-DASH',
-    subtitle: 'NEXT.JS // TAILWIND // K8S',
+    title: 'Aether Dashboard',
+    subtitle: 'Next.js // Tailwind // Kubernetes',
     imageUrl: 'https://images.unsplash.com/photo-1551288049-bbda38a594a0?auto=format&fit=crop&q=80&w=800',
     category: 'SaaS',
-    description: 'Enterprise-grade monitoring dashboard for cloud infrastructure, reducing incident response time by 40%.',
+    description: 'A comprehensive monitoring solution for cloud-native infrastructure, streamlining incident response and resource management.',
     technologies: ['React', 'Node.js', 'Kubernetes'],
     status: 'ONLINE',
     metrics: { perf: 99, security: 95, reliability: 98 }
   },
   {
     id: 'P-02',
-    title: 'CRYPTO-VAULT',
-    subtitle: 'TYPESCRIPT // SOLIDITY // WEB3',
+    title: 'Crypto Vault',
+    subtitle: 'TypeScript // Solidity // Web3',
     imageUrl: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&q=80&w=800',
-    category: 'FINTECH',
-    description: 'Highly secure digital asset management platform with multi-signature authorization protocols.',
+    category: 'Fintech',
+    description: 'A secure and intuitive platform for managing digital assets with advanced multi-sig security features.',
     technologies: ['TypeScript', 'Solidity', 'Next.js'],
     status: 'ONLINE',
     metrics: { perf: 92, security: 100, reliability: 99 }
   },
   {
     id: 'P-03',
-    title: 'NEXUS-UI',
-    subtitle: 'FRAMER // RADIX // HUD-DESIGN',
+    title: 'Nexus UI Library',
+    subtitle: 'Framer // Radix // Design Systems',
     imageUrl: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800',
-    category: 'OPEN_SOURCE',
-    description: 'A component library designed for low-latency financial terminals and military-grade HUD interfaces.',
+    category: 'Open Source',
+    description: 'A high-performance component library built for speed, accessibility, and ease of use in enterprise applications.',
     technologies: ['Tailwind', 'Storybook', 'Framer'],
     status: 'DEVELOPMENT',
     metrics: { perf: 88, security: 85, reliability: 90 }
@@ -55,12 +55,12 @@ export const EXPERIENCE: Experience[] = [
     id: 'EXP-01',
     role: 'Lead Frontend Architect',
     company: 'TechFlow Systems',
-    period: '2021 - PRESENT',
-    description: 'Leading the modernization of core platform architecture to micro-frontends.',
+    period: '2021 - Present',
+    description: 'Orchestrating the transition to a modern micro-frontend architecture and setting engineering standards.',
     achievements: [
-      'Engineered a custom build pipeline reducing CI/CD time by 60%.',
-      'Mentored a team of 12 developers in advanced React patterns.',
-      'Implemented standardized accessibility protocols across all products.'
+      'Built an automated delivery pipeline that increased deployment frequency by 60%.',
+      'Mentored cross-functional teams on best practices for React and TypeScript.',
+      'Established a unified accessibility framework for all customer-facing products.'
     ]
   },
   {
@@ -68,10 +68,10 @@ export const EXPERIENCE: Experience[] = [
     role: 'Senior Software Engineer',
     company: 'Neural Networks Inc.',
     period: '2018 - 2021',
-    description: 'Developed real-time data streaming visualizations for AI model outputs.',
+    description: 'Developed advanced data visualization tools for real-time artificial intelligence metrics.',
     achievements: [
-      'Optimized WebGL rendering engine for 4K data density.',
-      'Reduced initial bundle size by 35% through aggressive code splitting.'
+      'Created a high-performance rendering engine for large-scale datasets.',
+      'Optimized application performance, resulting in a 35% reduction in load times.'
     ]
   },
   {
@@ -79,37 +79,37 @@ export const EXPERIENCE: Experience[] = [
     role: 'Fullstack Developer',
     company: 'Startup Lab',
     period: '2015 - 2018',
-    description: 'Built and scaled the MVP for a top-tier logistics tracking platform.',
+    description: 'Core contributor to the initial build and scaling of a global logistics platform.',
     achievements: [
-      'Designed a resilient GraphQL API supporting 50k+ concurrent users.',
-      'Awarded "Developer of the Year" in 2017 for system stability.'
+      'Designed scalable GraphQL APIs supporting tens of thousands of users.',
+      'Successfully managed high-availability production environments.'
     ]
   }
 ];
 
 export const SKILLS = [
   { 
-    name: 'REACT / NEXT.JS', 
+    name: 'React / Next.js', 
     level: 98, 
-    color: COLORS.primary,
-    details: 'Expert in React 19 features, Server Components, and Concurrent rendering. Architected high-traffic dashboards for AETHER-DASH.' 
+    color: '#3b82f6',
+    details: 'Expert in the React ecosystem, including Server Components and state management.' 
   },
   { 
-    name: 'NODE / TYPESCRIPT', 
+    name: 'Node / TypeScript', 
     level: 94, 
-    color: COLORS.secondary,
-    details: 'Deep expertise in type-safe distributed systems and GraphQL API design. Managed neural network data pipelines at Neural Networks Inc.'
+    color: '#6366f1',
+    details: 'Fullstack development with a focus on type safety and scalable backend architecture.'
   },
   { 
-    name: 'CLOUD / DEVOPS', 
+    name: 'Cloud / DevOps', 
     level: 85, 
-    color: COLORS.accent,
-    details: 'Proficient in Kubernetes, AWS deployments, and Terraform. Specialized in multi-region failover strategies.'
+    color: '#10b981',
+    details: 'Proficient in AWS, Kubernetes, and infrastructure as code.'
   },
   { 
-    name: 'UX / HUD DESIGN', 
+    name: 'UX / Product Design', 
     level: 90, 
-    color: COLORS.warning,
-    details: 'Pioneer of high-density data visualizations. Creator of the NEXUS-UI HUD library used in aerospace simulation tools.'
+    color: '#f59e0b',
+    details: 'Designing intuitive user interfaces with a focus on usability and accessibility.'
   },
 ];

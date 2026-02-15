@@ -12,43 +12,51 @@ interface ContactPanelProps {
 
 const ContactPanel: React.FC<ContactPanelProps> = ({ contactData }) => {
   return (
-    <div className="flex flex-col gap-4 h-full">
-      <div className="hud-border hud-border-tl hud-border-br p-8 md:p-12 flex flex-col md:flex-row justify-between items-center gap-12 bg-slate-900/40 backdrop-blur-md">
-        
-        <div className="flex-1 space-y-8 text-center md:text-left">
-          <div>
-            <h3 className="font-hud text-3xl md:text-4xl text-cyan-400 mb-4 tracking-[0.2em] uppercase">Connect_Interface</h3>
-            <p className="text-sm md:text-base text-cyan-300/70 leading-relaxed max-w-lg">
-              Operational readiness is currently at peak capacity. Secure communication channels are open for tactical collaborations and high-stakes recruitment.
-            </p>
-          </div>
+    <div className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden animate-in fade-in duration-500">
+      <div className="grid grid-cols-1 md:grid-cols-2">
+        <div className="p-8 md:p-12 bg-slate-50 dark:bg-slate-900/50">
+          <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-6">Let's Connect</h2>
+          <p className="text-slate-600 dark:text-slate-400 mb-10 leading-relaxed text-lg">
+            I'm currently interested in full-time opportunities and strategic consulting projects. Feel free to reach out via email or any of my social profiles.
+          </p>
 
           <div className="space-y-6">
-            <div className="group">
-              <div className="text-[10px] text-cyan-700 font-hud mb-1 tracking-widest uppercase">EMAIL_ENCRYPTION_CHANNEL</div>
-              <div className="text-xl md:text-2xl text-cyan-200 font-mono tracking-tight group-hover:text-cyan-400 transition-colors">
-                {contactData.email}
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center text-blue-600 dark:text-blue-400">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Email</p>
+                <p className="font-semibold text-slate-900 dark:text-white">{contactData.email}</p>
               </div>
             </div>
 
-            <div className="group">
-              <div className="text-[10px] text-cyan-700 font-hud mb-1 tracking-widest uppercase">SATELLITE_VOICE_UPLINK</div>
-              <div className="text-xl md:text-2xl text-cyan-200 font-mono tracking-tight group-hover:text-cyan-400 transition-colors">
-                {contactData.phone}
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 rounded-2xl flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Phone</p>
+                <p className="font-semibold text-slate-900 dark:text-white">{contactData.phone}</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="w-full md:w-auto flex flex-col gap-8 items-center md:items-end">
-          <div className="flex flex-wrap justify-center md:justify-end gap-4">
+        <div className="p-8 md:p-12 flex flex-col justify-center items-center md:items-start">
+          <h4 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-6">Social Nodes</h4>
+          <div className="grid grid-cols-2 gap-4 w-full mb-10">
             {contactData.socials.map((social, idx) => (
               <a 
                 key={idx} 
                 href={social.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="min-w-[120px] text-center px-4 py-3 border border-cyan-500/30 text-xs text-cyan-500 font-hud hover:bg-cyan-500/10 hover:border-cyan-400 hover:text-cyan-400 transition-all uppercase tracking-widest shadow-[0_0_15px_rgba(34,211,238,0.05)]"
+                className="flex items-center justify-center px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-sm"
               >
                 {social.label}
               </a>
@@ -57,25 +65,13 @@ const ContactPanel: React.FC<ContactPanelProps> = ({ contactData }) => {
 
           <a 
             href={contactData.hireMeUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full md:w-64 py-5 bg-cyan-500/10 border border-cyan-500 text-cyan-400 font-hud text-lg tracking-[0.3em] text-center hover:bg-cyan-500 hover:text-black transition-all shadow-[0_0_30px_rgba(34,211,238,0.2)] group relative overflow-hidden uppercase"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-5 rounded-2xl text-center shadow-xl shadow-blue-500/20 transition-all hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-3"
           >
-            <span className="relative z-10 flex items-center justify-center gap-3">
-              <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse group-hover:bg-black" />
-              Hire_Me
-            </span>
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-400/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+            Work with Me
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
           </a>
-        </div>
-      </div>
-
-      <div className="mt-auto flex justify-between px-2 opacity-30 pointer-events-none">
-        <div className="text-[10px] font-hud uppercase tracking-tighter italic">
-          Protocol: SECURE_UPLINK_v4.2 // Sector: 071-G
-        </div>
-        <div className="text-[10px] font-hud uppercase tracking-tighter italic">
-          Latency: 24ms // SIG_STRENGTH: 98%
         </div>
       </div>
     </div>

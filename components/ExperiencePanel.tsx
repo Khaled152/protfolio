@@ -8,42 +8,36 @@ interface ExperiencePanelProps {
 
 const ExperiencePanel: React.FC<ExperiencePanelProps> = ({ experience }) => {
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex items-center gap-3 border-b border-cyan-900/50 pb-2 mb-2">
-        <h3 className="font-hud text-lg text-cyan-400 tracking-widest">CAREER_LOGS</h3>
-        <div className="h-[1px] flex-1 bg-cyan-900/30" />
-        <div className="text-[10px] text-cyan-700">TOTAL_ENTRIES: {experience.length}</div>
-      </div>
-
-      <div className="space-y-8 relative before:absolute before:inset-y-0 before:left-4 before:w-[1px] before:bg-cyan-900/30">
-        {experience.map((exp) => (
-          <div key={exp.id} className="relative pl-12">
-            <div className="absolute left-[13px] top-2 w-2 h-2 rounded-full bg-cyan-500 shadow-[0_0_8px_#22d3ee] z-10" />
-            
-            <div className="hud-border hud-border-tl p-5 hover:bg-cyan-900/10 transition-colors">
-              <div className="flex flex-col md:flex-row md:justify-between mb-4">
-                <div>
-                  <h4 className="font-hud text-xl text-cyan-200">{exp.role}</h4>
-                  <div className="text-cyan-500 font-hud text-xs uppercase tracking-widest">{exp.company}</div>
+    <div className="space-y-8 animate-in fade-in duration-500">
+      <div className="bg-white dark:bg-slate-800 rounded-3xl p-8 md:p-12 border border-slate-200 dark:border-slate-700 shadow-sm">
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-10">Professional History</h2>
+        
+        <div className="space-y-12 relative before:absolute before:inset-y-0 before:left-0 md:before:left-1/2 before:w-px before:bg-slate-200 dark:before:bg-slate-700 before:-translate-x-px">
+          {experience.map((exp, i) => (
+            <div key={exp.id} className={`relative flex flex-col md:flex-row items-center gap-8 ${i % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
+              <div className="hidden md:block w-1/2"></div>
+              
+              <div className="absolute left-0 md:left-1/2 top-0 w-4 h-4 rounded-full bg-blue-600 border-4 border-white dark:border-slate-800 shadow-md z-10 -translate-x-[7px] md:-translate-x-2"></div>
+              
+              <div className={`w-full md:w-1/2 pl-8 md:pl-0 ${i % 2 === 0 ? 'md:pr-12 md:text-right' : 'md:pl-12 md:text-left'}`}>
+                <div className="bg-slate-50 dark:bg-slate-900 rounded-2xl p-6 border border-slate-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-blue-900 transition-all hover:shadow-lg">
+                  <div className="text-blue-600 dark:text-blue-400 font-bold text-sm mb-1">{exp.period}</div>
+                  <h4 className="text-xl font-bold text-slate-900 dark:text-white mb-1">{exp.role}</h4>
+                  <div className="text-slate-500 dark:text-slate-500 font-medium mb-4">{exp.company}</div>
+                  <p className="text-sm text-slate-600 dark:text-slate-400 mb-4 italic leading-relaxed">{exp.description}</p>
+                  <ul className={`space-y-2 text-sm text-slate-700 dark:text-slate-300 ${i % 2 === 0 ? 'md:items-end' : 'md:items-start'} flex flex-col`}>
+                    {exp.achievements.map((ach, j) => (
+                      <li key={j} className="flex gap-2 items-start">
+                        <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1.5 shrink-0"></span>
+                        {ach}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <div className="text-cyan-600 font-hud text-sm mt-1 md:mt-0">{exp.period}</div>
-              </div>
-
-              <p className="text-cyan-100/70 text-sm leading-relaxed mb-4 italic">
-                {exp.description}
-              </p>
-
-              <div className="space-y-2">
-                {exp.achievements.map((ach, j) => (
-                  <div key={j} className="flex gap-3 text-xs text-cyan-300/80">
-                    <span className="text-cyan-500 font-hud shrink-0">&gt;&gt;</span>
-                    <span>{ach}</span>
-                  </div>
-                ))}
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

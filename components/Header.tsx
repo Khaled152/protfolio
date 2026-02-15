@@ -1,45 +1,31 @@
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 interface HeaderProps {
   operatorName: string;
 }
 
 const Header: React.FC<HeaderProps> = ({ operatorName }) => {
-  const [time, setTime] = useState(new Date());
-
-  useEffect(() => {
-    const timer = setInterval(() => setTime(new Date()), 1000);
-    return () => clearInterval(timer);
-  }, []);
-
   return (
-    <header className="h-16 flex items-center justify-between px-4 hud-border hud-border-tl hud-border-tr">
-      <div className="flex items-center gap-4">
-        <div className="w-10 h-10 border border-cyan-500/50 flex items-center justify-center">
-          <div className="w-6 h-6 bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center">
-            <div className="w-2 h-2 bg-cyan-400 animate-ping rounded-full" />
-          </div>
+    <header className="h-20 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between px-6 sticky top-0 z-50">
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-lg shadow-lg">
+          {operatorName.charAt(0)}
         </div>
         <div>
-          <h1 className="text-xl font-hud font-bold tracking-[0.2em] text-cyan-400 uppercase">{operatorName}</h1>
-          <div className="text-[10px] text-cyan-500/70 flex gap-4 font-hud">
-            <span className="flex items-center gap-1">
-              <span className="w-1 h-1 bg-emerald-500 rounded-full" />
-              STATUS: ONLINE
-            </span>
-            <span className="hidden sm:block">RANK: SENIOR_ARCHITECT</span>
-            <span className="hidden md:block">EXP_POINTS: 85,200</span>
-          </div>
+          <h1 className="text-xl font-bold text-slate-900 dark:text-white leading-none">{operatorName}</h1>
+          <p className="text-xs text-slate-500 mt-1">Fullstack Engineer</p>
         </div>
       </div>
 
-      <div className="hidden sm:flex flex-col items-end font-hud text-sm">
-        <div className="text-cyan-300 flex items-baseline gap-2">
-           <span className="text-[10px] opacity-40">UTC_SIGNAL:</span>
-           {time.toLocaleTimeString([], { hour12: false })}
+      <div className="flex items-center gap-6">
+        <div className="hidden sm:flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
+          <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+          Available for new projects
         </div>
-        <div className="text-[10px] text-cyan-500/50">SECTOR: HUB_71</div>
+        <button className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-sm font-medium transition-all shadow-md">
+          Download Resume
+        </button>
       </div>
     </header>
   );
