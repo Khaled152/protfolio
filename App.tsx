@@ -17,12 +17,16 @@ import ProjectPanel from './components/ProjectPanel';
 import ExperiencePanel from './components/ExperiencePanel';
 import ContactPanel from './components/ContactPanel';
 import AdminPanel from './components/AdminPanel';
+import AuthPanel from './components/AuthPanel';
 
 const STORAGE_KEY = 'portfolio_data_v2';
+const AUTH_KEY = 'portfolio_auth_session';
 
 const App: React.FC = () => {
   const [activeSection, setActiveSection] = useState<NavSection>(NavSection.STATUS);
-  const [isAdminUnlocked, setIsAdminUnlocked] = useState(false);
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authError, setAuthError] = useState('');
   
   // Dynamic Portfolio State
   const [appTitle, setAppTitle] = useState('Professional Portfolio');
@@ -31,6 +35,7 @@ const App: React.FC = () => {
   const [resumeUrl, setResumeUrl] = useState('#');
   const [operatorBio, setOperatorBio] = useState(INITIAL_BIO);
   const [tacticalTags, setTacticalTags] = useState<string[]>(DEFAULT_TACTICAL_TAGS);
+  const [adminPassword, setAdminPassword] = useState('admin123'); // Default password
   
   // Stats State
   const [yearsExperience, setYearsExperience] = useState('8+ Years');
@@ -80,7 +85,20 @@ const App: React.FC = () => {
         if (parsed.experience) setExperience(parsed.experience);
         if (parsed.skills) setSkills(parsed.skills);
         if (parsed.contactData) setContactData(parsed.contactData);
+        if (parsed.adminPassword) setAdminPassword(parsed.adminPassword);
       } catch (e) { console.error("Persistence Load Error", e); }
+    }
+
+    // Check existing session
+    const session = localStorage.getItem(AUTH_KEY);
+    if (session === 'true') {
+      setIsAdminAuthenticated(true);
+    }
+
+    // Special Root Check
+    if (window.location.hash === '#admin') {
+      setShowAuthModal(true);
+      window.location.hash = ''; // Clear for aesthetics
     }
   }, []);
 
@@ -103,14 +121,15 @@ const App: React.FC = () => {
       projects, 
       experience, 
       skills, 
-      contactData 
+      contactData,
+      adminPassword
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   }, [
     appTitle, operatorName, operatorRole, resumeUrl, operatorBio, tacticalTags, 
     yearsExperience, projectsCompleted, location, copyrightYear, 
     footerOwnerName, footerBrandName, footerText, projects, experience, 
-    skills, contactData
+    skills, contactData, adminPassword
   ]);
 
   // Auto-save whenever state changes
@@ -122,11 +141,37 @@ const App: React.FC = () => {
     document.title = appTitle;
   }, [appTitle]);
 
+  const handleAuth = (password: string) => {
+    if (password === adminPassword) {
+      setIsAdminAuthenticated(true);
+      setShowAuthModal(false);
+      setAuthError('');
+      localStorage.setItem(AUTH_KEY, 'true');
+      setActiveSection(NavSection.ADMIN);
+    } else {
+      setAuthError('Invalid passkey. Access denied.');
+    }
+  };
+
+  const handleLogout = () => {
+    setIsAdminAuthenticated(false);
+    localStorage.removeItem(AUTH_KEY);
+    setActiveSection(NavSection.STATUS);
+  };
+
+  const triggerAuth = () => {
+    if (isAdminAuthenticated) {
+      setActiveSection(NavSection.ADMIN);
+    } else {
+      setShowAuthModal(true);
+    }
+  };
+
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (e.shiftKey && e.altKey && e.key.toLowerCase() === 's') {
-      setIsAdminUnlocked(prev => !prev);
+      triggerAuth();
     }
-  }, []);
+  }, [isAdminAuthenticated]);
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
@@ -134,19 +179,29 @@ const App: React.FC = () => {
   }, [handleKeyDown]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-900 transition-colors">
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-900 transition-colors pb-20 md:pb-0">
       <Header 
         operatorName={operatorName} 
         operatorRole={operatorRole} 
         resumeUrl={resumeUrl}
       />
       
-      <div className="flex-1 flex overflow-hidden w-full px-6 py-6 gap-6">
-        <Sidebar activeSection={activeSection} onNavigate={setActiveSection} isAdminUnlocked={isAdminUnlocked} />
+      <div className="flex-1 flex flex-col md:flex-row overflow-hidden w-full px-4 md:px-6 py-4 md:py-6 gap-4 md:gap-6">
+        <Sidebar 
+          activeSection={activeSection} 
+          onNavigate={(section) => {
+            if (section === NavSection.ADMIN && !isAdminAuthenticated) {
+              setShowAuthModal(true);
+            } else {
+              setActiveSection(section);
+            }
+          }} 
+          isAdminUnlocked={isAdminAuthenticated} 
+        />
         
         <main className="flex-1 overflow-hidden">
-          <div className="h-full overflow-y-auto pr-2 custom-scroll">
-            <div className="w-full space-y-6 pb-6">
+          <div className="h-full overflow-y-auto pr-0 md:pr-2 custom-scroll">
+            <div className="w-full space-y-4 md:space-y-6 pb-6">
               {activeSection === NavSection.STATUS && (
                 <StatusPanel 
                   operatorBio={operatorBio} 
@@ -160,7 +215,7 @@ const App: React.FC = () => {
               {activeSection === NavSection.EXPERIENCE && <ExperiencePanel experience={experience} />}
               {activeSection === NavSection.PROJECTS && <ProjectPanel projects={projects} />}
               {activeSection === NavSection.CONTACT && <ContactPanel contactData={contactData} />}
-              {isAdminUnlocked && activeSection === NavSection.ADMIN && (
+              {isAdminAuthenticated && activeSection === NavSection.ADMIN && (
                 <AdminPanel 
                   projects={projects} setProjects={setProjects}
                   skills={skills} setSkills={setSkills}
@@ -179,6 +234,8 @@ const App: React.FC = () => {
                   footerText={footerText} setFooterText={setFooterText}
                   contactData={contactData} setContactData={setContactData}
                   appTitle={appTitle} setAppTitle={setAppTitle}
+                  adminPassword={adminPassword} setAdminPassword={setAdminPassword}
+                  onLogout={handleLogout}
                   onSave={saveAllData}
                 />
               )}
@@ -187,19 +244,27 @@ const App: React.FC = () => {
         </main>
       </div>
 
-      <footer className="py-10 border-t border-slate-200 dark:border-slate-800 flex flex-col items-center gap-2">
+      <footer className="hidden md:flex py-10 border-t border-slate-200 dark:border-slate-800 flex-col items-center gap-2">
         <button 
-          onClick={() => setIsAdminUnlocked(!isAdminUnlocked)}
+          onClick={triggerAuth}
           className="text-xs text-slate-400 hover:text-blue-500 transition-colors cursor-default select-none group text-center px-4"
         >
           © {copyrightYear} {footerOwnerName} <span className="group-hover:text-blue-400 font-medium transition-colors">{footerBrandName}</span>. {footerText}.
         </button>
-        {isAdminUnlocked && (
+        {isAdminAuthenticated && (
           <span className="text-[10px] text-blue-500 font-bold uppercase tracking-widest animate-pulse">
-            [ Admin Mode Active ]
+            [ Admin Session Active ]
           </span>
         )}
       </footer>
+
+      {showAuthModal && (
+        <AuthPanel 
+          onVerify={handleAuth} 
+          onCancel={() => { setShowAuthModal(false); setAuthError(''); }} 
+          error={authError} 
+        />
+      )}
     </div>
   );
 };
